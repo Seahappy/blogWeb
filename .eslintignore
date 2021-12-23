@@ -1,0 +1,4 @@
+# 此配置页会在命令行生效
+src/until/md5.js
+src/until/qrcode.js
+src/until/wordcloud.min.js
