@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-04-12 10:02:09
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-20 11:25:03
+ * @LastEditTime: 2021-12-29 16:03:36
  * @FilePath: \blog\blogweb\src\components\infoBlog\infoBlog.vue
 -->
 
@@ -501,6 +501,9 @@ export default {
             '',
             '/infoBlog?id_Article=' + this.infoData.id_Article
           )
+          this.$nextTick(_ => {
+            this.mavon_Editor_Copy()
+          })
           this.article_Find_Lovely()
         } else {
           this.$Msg(massage, 'wran')
@@ -522,10 +525,10 @@ export default {
     },
     // 获取文章
     async article_Info_Data(id_Article) {
-      document.body.firstElementChild.nextElementSibling.scrollTop = 0
       const res = await article_View_Page({ id_Article })
       const { code, massage, data } = res.data
       if (code === 200) {
+        document.body.firstElementChild.nextElementSibling.scrollTop = 0
         this.infoData = data.data[0]
         this.article_Comment_Data()
         this.give_Like_Flag = this.infoData.like_List.some(
