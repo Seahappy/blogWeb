@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-04-12 10:02:09
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-29 16:03:36
+ * @LastEditTime: 2021-12-29 17:43:39
  * @FilePath: \blog\blogweb\src\components\infoBlog\infoBlog.vue
 -->
 
@@ -595,6 +595,7 @@ export default {
     window.removeEventListener('copy', this.copyDefaultOpar, true)
   },
   watch: {
+    // 搜索时通过监听路由变化获取文章详情
     $route: function({ query: { id_Article }, params: { currentPageJump }}) {
       if (currentPageJump) this.article_Info_Data(Number(id_Article))
     }
