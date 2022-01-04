@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-05-19 12:37:46
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-08 20:53:30
+ * @LastEditTime: 2021-12-30 17:51:43
  * @FilePath: \blog\blogweb\src\components\Administration\OnlineManagement.vue
 -->
 <template>
@@ -216,8 +216,9 @@ export default {
     overflow-y: auto;
     margin: 20px;
     .SHButton {
-      &:last-child{
-        margin-left: 15px;
+      margin-left: 15px;
+      &:first-child {
+        margin-left: 0;
       }
     }
   }

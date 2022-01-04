@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-04-26 15:26:55
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-11 14:14:37
+ * @LastEditTime: 2021-12-30 18:28:32
  * @FilePath: \blog\blogweb\src\components\Administration\RoleManagement.vue
 -->
 <template>
@@ -42,7 +42,7 @@
         <SHButton @click='cancel_Save_Role()'>取消</SHButton>
       </div>
     </div>
-    <SHButton type='primary' @click='add_Role()'>{{ remove_Down_Role ? "取消" : "" }}新增角色</SHButton>
+    <SHButton v-if="set_Button_Power('add_Role')" type='primary' @click='add_Role()'>{{ remove_Down_Role ? "取消" : "" }}新增角色</SHButton>
     <div class='table_Role_Wrap'>
       <SHTable :tab_Title='tab_Title' :tab_Data='tableData'>
         <template v-slot:thead_Operation>
@@ -51,10 +51,12 @@
         <template v-slot:tbody_Operation='slotProps'>
           <td style='width: 300px'>
             <SHButton
+              v-if="set_Button_Power('edit_Role')"
               type='primary'
               icon='fa-pencil-square'
               @click='edit_Role(slotProps.row)'>编辑</SHButton>
             <SHButton
+              v-if="set_Button_Power('delete_Role')"
               type='danger'
               icon='fa-trash'
               @click='delete_Role(slotProps.row)'>删除</SHButton>
@@ -81,7 +83,7 @@ import {
   edit_Role_Data,
   delete_Role_Data
 } from '@/http/model/role.js'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -113,7 +115,8 @@ export default {
   },
   components: { SeaTree },
   computed: {
-    ...mapState('login', ['Users'])
+    ...mapState('login', ['Users']),
+    ...mapGetters('login', ['set_Button_Power'])
   },
   methods: {
     currentPageOpar(pageSize) {

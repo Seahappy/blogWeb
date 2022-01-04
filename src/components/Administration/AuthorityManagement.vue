@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-04-26 15:26:11
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-20 17:52:42
+ * @LastEditTime: 2021-12-30 18:26:33
  * @FilePath: \blog\blogweb\src\components\Administration\AuthorityManagement.vue
 -->
 <template>
@@ -29,6 +29,7 @@
               </li>
             </ul>
             <SHButton
+              v-if="set_Button_Power('choose_Roles')"
               slot='icon'
               :class="
                 open_Close_id === slotProps.row._id ? 'select_Button_Style' : ''
@@ -39,12 +40,12 @@
             </SHButton>
           </SHToolTip>
           <SHButton
-            v-if='slotProps.row.frozen_State === 1'
+            v-if='slotProps.row.frozen_State === 1 && set_Button_Power("unfreezing_Person")'
             type='warn'
             icon='fa-unlock'
             @click="unfreezing_frozen_Person(slotProps.row, 'unfreezing')">解除冻结</SHButton>
           <SHButton
-            v-if='slotProps.row.frozen_State === 0'
+            v-if='slotProps.row.frozen_State === 0 && set_Button_Power("frozen_Person")'
             type='danger'
             icon='fa-unlock-alt'
             @click="unfreezing_frozen_Person(slotProps.row, 'frozen')">
@@ -68,6 +69,7 @@ import {
   unfreezing_Person
 } from '@/http/model/user.js'
 import { get_Role_Data, user_Edit_Role } from '@/http/model/role.js'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -88,6 +90,9 @@ export default {
         total: 0
       }
     }
+  },
+  computed: {
+    ...mapGetters('login', ['set_Button_Power'])
   },
   methods: {
     currentPageOpar(pageSize) {
@@ -155,9 +160,6 @@ export default {
 
 <style lang="less" scoped>
 .ToolTipUi {
-  .SHButton {
-    padding: 8px 18px;
-  }
   ul{
     li {
       padding: 4px 20px;
@@ -175,9 +177,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  .SHButton {
-    &:last-child{
-      margin-left: 15px;
+  .toolTip {
+    .SHButton {
+      margin-right: 15px;
+      padding: 8px 18px;
     }
   }
   .select_Button_Style {

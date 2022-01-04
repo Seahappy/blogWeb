@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-07-08 10:58:35
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-10 16:17:20
+ * @LastEditTime: 2021-12-30 20:23:05
  * @FilePath: \blog\blogweb\src\http\model\other.js
  */
 
@@ -33,3 +33,5 @@ export const get_Network_Online_Data = () => get({ url: '/api/getNetworkOnlineDa
 export const set_Real_IP_Location = (body) => post({ url: '/api/setRealIPLocation', body })
 
 export const get_Map_Josn_Data = (body) => post({ url: '/api/getMapJosnData', body })
+
+export const site_Map_Generate = (body) => post({ url: '/api/siteMapGenerate', body })

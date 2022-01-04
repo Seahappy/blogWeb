@@ -3,7 +3,7 @@
  * @Author: Cxy
  * @Date: 2021-08-02 20:55:48
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-27 11:46:25
+ * @LastEditTime: 2021-12-30 17:15:41
  * @FilePath: \blog\blogweb\src\views\TimeLine.vue
 -->
 <template>
@@ -72,6 +72,7 @@ export default {
   methods: {
     ...mapMutations(['jump_info_Blog']),
     async tabClick(name) {
+      this.timeLineData = []
       if (!this.timeLine_Data_All.website.length) await this.get_Time_Line_Data()
       this.time_Line_Arrangement(this.timeLine_Data_All[name], name === 'website' ? 'creation_Time' : 'id_Article')
     },
@@ -110,8 +111,9 @@ export default {
         c.day = year_Month_Item.slice(8, 11)
         c.time = year_Month_Item.slice(11, 16)
       })
-      this.timeLineData = timeLineData
-      document.getElementById('app').scrollTop = 0
+      this.$nextTick(_ => {
+        this.timeLineData = timeLineData
+      })
     },
     goAnchor(index) {
       if (this.select_Index === index) return

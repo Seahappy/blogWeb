@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-05-28 20:33:14
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-11 16:58:28
+ * @LastEditTime: 2021-12-30 18:10:58
  * @FilePath: \blog\blogweb\src\components\tree.vue
 -->
 <template>
@@ -11,7 +11,7 @@
     <SHButton ref='active_Btn' style='padding: 6px 12px; margin-top: 15px' type='primary' @click='add_All_Role'>
       <i style='margin-right: 0' class='fa fa-plus-square'/>
     </SHButton>
-    <div ref='active_Dia' :style="{ transform: active_Dia ? 'scale(1)' : 'scale(0)' }" class='dia_Tree' style='bottom: -83px; left: 55px'>
+    <div ref='active_Dia' :style="{ transform: active_Dia ? 'scale(1)' : 'scale(0)' }" class='dia_Tree' style='left: 55px'>
       <div class='dia_Tree_Item'>
         <p>path:</p>
         <input v-model='powerData.path' >

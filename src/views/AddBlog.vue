@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-03-31 18:10:29
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-20 16:06:53
+ * @LastEditTime: 2021-12-30 19:27:57
  * @FilePath: \blog\blogweb\src\views\AddBlog.vue
 -->
 <template>
@@ -32,8 +32,8 @@
       </div>
       <div class='AddBlog_Left_Tag_Wrap'>
         <div class='AddBlog_Left_Tag_From'>
-          <input v-model='Tag_Name' type='text' placeholder='添加标签' placeholder-color='#fff' @keydown.enter='Article_Tag_Add' >
-          <span @click='Article_Tag_Add'>+</span>
+          <input v-if="set_Button_Power('Article_Tag_Add')" v-model='Tag_Name' type='text' placeholder='添加标签' placeholder-color='#fff' @keydown.enter='Article_Tag_Add' >
+          <span v-if="set_Button_Power('Article_Tag_Add')" @click='Article_Tag_Add'>+</span>
         </div>
         <p>全部的标签</p>
         <ul>
@@ -59,7 +59,7 @@
           <input v-model='title_Article' type='text' maxlength='50' placeholder='添加文章标题' >
         </div>
         <div class='AddBlog_Right_Top_Send'>
-          <span @click='publish_Article'>发布文章</span>
+          <span v-if="set_Button_Power('publish_Article')" @click='publish_Article'>发布文章</span>
         </div>
       </div>
       <mavon-editor ref='markDown' v-model='content_Article' class='markDown_Style' placeholder='要写点什么吗？' toolbarsBackground='#987b4e' :externalLink='externalLink'
@@ -79,7 +79,7 @@ import {
   articleTag_Add,
   articleTag_Delete
 } from '@/http/model/article.js'
-import { mapActions, mapState, mapMutations } from 'vuex'
+import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
 import { randomHexColorCode } from '@/until'
 export default {
   data() {
@@ -186,6 +186,7 @@ export default {
     },
     // 双击 删除标签
     Article_Tag_Del(tag, flag) {
+      if (!this.set_Button_Power('Article_Tag_Del')) return
       const {
         timer,
         Users: { admin_Code },
@@ -279,7 +280,8 @@ export default {
   },
   computed: {
     ...mapState('article', ['Article_Tag_Total', 'Edit_Blog_Data']),
-    ...mapState('login', ['Users'])
+    ...mapState('login', ['Users']),
+    ...mapGetters('login', ['set_Button_Power'])
   },
   beforeDestroy() {
     this.handle_Edit_Blog_Data([])

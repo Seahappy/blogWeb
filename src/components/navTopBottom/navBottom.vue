@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-03-23 15:50:57
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-13 20:42:47
+ * @LastEditTime: 2021-12-31 16:04:30
  * @FilePath: \blog\blogweb\src\components\navTopBottom\navBottom.vue
 -->
 <template>
@@ -26,13 +26,16 @@
       <div>
         © Copyright 2020-2021 备案号：<span @click='copyContent'>蒙ICP备2021000838号</span>
         SeaHappy All rights reserved.
+        <span v-if="set_Button_Power('site_Map')" @click='generate_Site_Map'>Map</span>
+        <a style='margin-left: 10px;' class='fa fa-openid' aria-hidden='true' href='https://www.seahappy.xyz/blogserve/siteMap.xml'>网站地图</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { site_Map_Generate } from '@/http/model/other'
+import { mapState, mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -41,7 +44,8 @@ export default {
     }
   },
   computed: {
-    ...mapState('login', ['nav_Data', 'nav_Data_Rest'])
+    ...mapState('login', ['nav_Data', 'nav_Data_Rest']),
+    ...mapGetters('login', ['set_Button_Power'])
   },
   watch: {
     $route: function(newV) {
@@ -76,6 +80,20 @@ export default {
       // / 复制成功后再将构造的标签 移除
       cInput.remove()
       setTimeout(() => window.open('https://beian.miit.gov.cn/#/Integrated/index'), 1000)
+    },
+    generate_Site_Map() {
+      site_Map_Generate().then(res => {
+        const { status, data } = res
+        if (status === 200) {
+          const ele = document.createElement('a')
+          ele.setAttribute('href', 'data:text/plain;charset=utf-8,' + data)
+          ele.setAttribute('download', 'siteMap.xml')
+          ele.style.display = 'none'
+          document.body.appendChild(ele)
+          ele.click()
+          document.body.removeChild(ele)
+        }
+      })
     }
   },
   created() {
@@ -161,6 +179,9 @@ export default {
     span {
       text-decoration: underline;
       cursor: pointer;
+    }
+    a {
+      color: #fff;
     }
   }
 }
