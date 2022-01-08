@@ -2,11 +2,11 @@
  * @Author: Cxy
  * @Date: 2021-07-21 17:32:32
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-19 17:47:19
+ * @LastEditTime: 2022-01-07 17:05:30
  * @FilePath: \blog\blogweb\src\components\musicInterface.vue
 -->
 <template>
-  <div v-if="Login_Device_Code() === 'Window'" ref='music' class='music'>
+  <div ref='music' class='music' :style="{width: (RightRecordBox ? 100 : 280) + 'px'}">
     <div v-if='login_Flog' class='music_Controls' :style="recordBox ? 'backdrop-filter: blur(4px);background: #0000009c;' : ''">
       <div v-if='dailySongs[song_Index]' class='music_BG' :class="recordBox || play_Pause ? '' : 'recordRotate'" :style="{
         backgroundImage: 'url(' + dailySongs[song_Index].al.picUrl + ')',borderRadius: recordBox ? '5px' : '50%'
@@ -213,7 +213,8 @@ export default {
           require: { massage: '请输入验证码' }
         }
       },
-      recordBox: false,
+      recordBox: false, // 拖拽吸附效果
+      RightRecordBox: false, // 右侧特定拖拽吸附效果
       Login_Device_Code
     }
   },
@@ -693,8 +694,10 @@ export default {
           const event = ev || window.event
           let moveX = event.clientX - diffX
           let moveY = event.clientY - diffY
+          that.RightRecordBox = false
           if (moveX < 0) {
             that.recordBox = false
+            that.RightRecordBox = true
             moveX = -40
           } else if (moveX > window.innerWidth - music_Dom.offsetWidth) {
             moveX = window.innerWidth - music_Dom.offsetWidth + 210
@@ -1103,6 +1106,12 @@ export default {
         cursor: pointer;
       }
     }
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .music {
+    display: none;
   }
 }
 </style>

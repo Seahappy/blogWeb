@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-02-27 23:04:28
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-31 16:23:58
+ * @LastEditTime: 2022-01-06 17:28:42
  * @FilePath: \blog\blogweb\src\views\Login.vue
 -->
 <template>
@@ -224,7 +224,6 @@ export default {
     async login_Account(Users) {
       this.session_Set_User(Users)
       await this.get_Router_Data(Users.admin_Code)
-      console.log(this.$route.query.path)
       this.$router.push({ path: this.$route.query.path || '/Home' })
       // 调用socket聊天程序
       bus.$emit('receive_Message')

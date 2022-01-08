@@ -3,7 +3,7 @@
  * @Author: Cxy
  * @Date: 2021-09-23 14:45:30
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-20 20:09:45
+ * @LastEditTime: 2022-01-07 16:28:34
  * @FilePath: \blog\blogweb\src\components\Administration\systemManagement.vue
 -->
 <template>
@@ -43,9 +43,9 @@
         <div class='Echarts_Describe'>
           <div ref='mem_Echarts' class='cpu_Echarts' />
           <div class='cpu_Mem_Describe'>
-            <span><i>未使用：</i><strong>{{ memDescribe.free + 'GB' }}</strong></span>
-            <span><i>已使用：</i><strong>{{ memDescribe.used + 'GB' }}</strong></span>
-            <span><i>总容量：</i><strong>{{ memDescribe.total + 'GB' }}</strong></span>
+            <span><i>未使用：</i><strong>{{ memDescribe.free }}</strong></span>
+            <span><i>已使用：</i><strong>{{ memDescribe.used }}</strong></span>
+            <span><i>总容量：</i><strong>{{ memDescribe.total }}</strong></span>
           </div>
         </div>
       </div>
@@ -66,8 +66,8 @@
         </p>
         <div class='Echarts_Describe'>
           <div class='net_Describe'>
-            <div>发送(总)：<span style='font-weight: bold;'>{{ netDescribe.tx_bytes + 'MB' }}</span></div>
-            <div>接收(总)：<span style='font-weight: bold;'>{{ netDescribe.rx_bytes + 'MB' }}</span></div>
+            <div>发送(总)：<span style='font-weight: bold;'>{{ netDescribe.tx_bytes }}</span></div>
+            <div>接收(总)：<span style='font-weight: bold;'>{{ netDescribe.rx_bytes }}</span></div>
           </div>
           <div ref='net_Echarts' class='net_Echarts' />
         </div>
@@ -229,9 +229,9 @@ export default {
       this.mem_Echarts.setOption(this.option_CpuMen_Echarts(((mem?.used / mem?.total) * 100).toFixed(1) || 0, 'alarmValMem'))
       this.disk_Echarts.setOption(this.option_Disk_Echarts(fsSize?.reverse()))
       const { rxTx_Data, timer } = this
-      if (networkStats) {
+      if (networkStats?.length) {
         // rx 接收 tx 传输
-        const { rx_sec, tx_sec } = networkStats
+        const { rx_sec, tx_sec } = networkStats[0]
         const newDate = this.$options.filters.dateFilter(new Date().getTime()).slice(-8)
         rxTx_Data.unshift({ rx_sec, tx_sec, newDate })
         rxTx_Data.pop()
@@ -345,7 +345,7 @@ export default {
       const data_Echarts = data.reduce((prev, cur) => {
         prev.push({
           data: cur.use.toFixed(1),
-          dataString: JSON.stringify({ name: cur.fs.replace(/:/g, ''), dataAll: (cur.size / 1024 / 1024 / 1024).toFixed(1), dataUser: (cur.used / 1024 / 1024 / 1024).toFixed(1) })
+          dataString: JSON.stringify({ name: cur.fs.replace(/:/g, ''), dataAll: this.bytesToSize(cur.size), dataUser: this.bytesToSize(cur.used) })
         })
         return prev
       }, [])
@@ -439,6 +439,7 @@ export default {
       }
     },
     option_Net_Echarts(data) {
+      const that = this
       return {
         title: [
           {
@@ -469,7 +470,7 @@ export default {
           },
           formatter: function(params) {
             const { name, data, seriesName, color } = params[0]
-            return name + '</br></br>' + seriesName + ' <span style="font-weight: bold;font-size: 14px;color: ' + color + ';"> ' + (data / 1024 > 1 ? (data / 1024).toFixed(1) + 'MB' : data + 'KB') + '</span>'
+            return name + '</br></br>' + seriesName + ' <span style="font-weight: bold;font-size: 14px;color: ' + color + ';"> ' + that.bytesToSize(data * 1024) + '</span>'
           }
         },
         xAxis: [
@@ -728,6 +729,13 @@ export default {
       const nodeMinutes = parseInt(second % 86400 % 3600 / 60) + ''
       const nodeSeconds = second % 86400 % 3600 % 60 + ''
       return nodeDays + ',' + nodeHours.padStart(2, '0') + ',' + nodeMinutes.padStart(2, '0') + ',' + nodeSeconds.padStart(2, '0')
+    },
+    bytesToSize(bytes) {
+      if (!bytes) return '0 B'
+      if (bytes < 1) return bytes + ' B'
+      const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      const i = Math.floor(Math.log(bytes) / Math.log(1024))
+      return (bytes / Math.pow(1024, i)).toPrecision(3) + ' ' + sizes[i]
     }
   },
   computed: {
@@ -740,16 +748,16 @@ export default {
     },
     memDescribe() {
       const { systemData } = this
-      const free = systemData.mem?.free ? (systemData.mem?.free / 1024 / 1024 / 1024).toFixed(1) : '0.0'
-      const total = systemData.mem?.total ? (systemData.mem?.total / 1024 / 1024 / 1024).toFixed(1) : '0.0'
-      const used = systemData.mem?.used ? (systemData.mem?.used / 1024 / 1024 / 1024).toFixed(1) : '0.0'
+      const free = this.bytesToSize(systemData.mem?.free)
+      const total = this.bytesToSize(systemData.mem?.total)
+      const used = this.bytesToSize(systemData.mem?.used)
       return { free, total, used }
     },
     netDescribe() {
       const { systemData } = this
-      if (!systemData.networkStats) return { tx_bytes: 0, rx_bytes: 0 }
-      const rx_bytes = (systemData.networkStats?.rx_bytes / 1024 / 1024 / 10).toFixed(1) || '0.0'
-      const tx_bytes = (systemData.networkStats?.tx_bytes / 1024 / 1024 / 10).toFixed(1) || '0.0'
+      if (!systemData.networkStats?.length) return { tx_bytes: 0, rx_bytes: 0 }
+      const rx_bytes = this.bytesToSize(systemData.networkStats[0]?.rx_bytes)
+      const tx_bytes = this.bytesToSize(systemData.networkStats[0]?.tx_bytes)
       return { tx_bytes, rx_bytes }
     },
     hostNameLogofileDescribe() {

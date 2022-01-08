@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-03-03 14:18:15
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-06 20:34:30
+ * @LastEditTime: 2022-01-07 19:20:18
  * @FilePath: \blog\blogweb\src\components\navTopBottom\navTop.vue
 -->
 <template>
@@ -766,11 +766,10 @@ export default {
     }
     .nav_Search_Flag {
       top: 90px !important;
-      width: 100%;
-      padding: 0;
+      width: 90%;
+      padding: 0 5%;
       .nav_Search_Wrap {
-        width: 80%;
-        transform: translate3d(0, 70%, 0);
+        margin-top: 50px;
         .nav_Search_font {
           font-size: 45px;
         }
@@ -780,11 +779,6 @@ export default {
             width: 85%;
           }
         }
-      }
-      .nav_Search_Content {
-        height: 55%;
-        width: 80%;
-        margin-top: -60px;
       }
     }
   }

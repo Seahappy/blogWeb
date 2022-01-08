@@ -3,7 +3,7 @@
  * @Author: Cxy
  * @Date: 2021-11-29 14:56:52
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-10 17:58:00
+ * @LastEditTime: 2022-01-06 20:04:21
  * @FilePath: \blog\blogweb\src\components\subgroups\paging\paging.vue
 -->
 <template>
@@ -276,7 +276,7 @@ ul {
             content: "...";
             padding: 0 10px;
             position: absolute;
-            top: -5px;
+            top: 1px;
             left: -5px;
           }
         }
