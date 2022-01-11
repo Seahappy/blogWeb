@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-02-27 23:04:28
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-06 17:11:40
+ * @LastEditTime: 2022-01-11 17:37:34
  * @FilePath: \blog\blogweb\src\views\Home.vue
 -->
 <template>
@@ -1118,6 +1118,7 @@ export default {
         }
       }
       .home_Administration {
+        padding: 3vh 0 0 0;
         .Administration_Lander_Wrap {
           .Administration_Right_Lander_Item {
             width: 33%;
