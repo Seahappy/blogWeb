@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-03-03 14:18:15
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-07 19:20:18
+ * @LastEditTime: 2022-01-12 17:48:12
  * @FilePath: \blog\blogweb\src\components\navTopBottom\navTop.vue
 -->
 <template>
@@ -199,6 +199,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['app_Background_Url']),
     ...mapState('login', ['nav_Data', 'nav_Data_Rest', 'Users']),
     ...mapState('article', ['Article_Tag_Total']),
     ...mapState('admin', ['audIconHD']),
@@ -280,7 +281,7 @@ export default {
             this.$Msg(massage, 'wran')
           }
         })
-      }, 1000)
+      }, 300)
     }
   },
   watch: {
@@ -297,9 +298,10 @@ export default {
       if (newV) {
         if (!this.Article_Tag_Total.length) this.Article_Tag_Find()
         body.style.cssText =
-          'width: 100%; height: 100%; position: fixed; left: 0; overflow: hidden;'
+          this.app_Background_Url + 'width: 100%; height: 100%; position: fixed; left: 0; overflow: hidden;'
       } else {
-        body.removeAttribute('style')
+        body.style.cssText = this.app_Background_Url
+        // body.removeAttribute('style')
       }
     }
   }

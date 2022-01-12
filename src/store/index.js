@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-02-27 23:02:14
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-18 09:41:05
+ * @LastEditTime: 2022-01-12 17:54:40
  * @FilePath: \blog\blogweb\src\store\index.js
  */
 import Vue from 'vue'
@@ -15,6 +15,9 @@ import mixed from './modules/mixed'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  state: {
+    app_Background_Url: 'background-image: url(/home/backGroundImage' + new Date().getDay() + '.jpg);'
+  },
   mutations: {
     /**
      * @description: 全局跳转详情页

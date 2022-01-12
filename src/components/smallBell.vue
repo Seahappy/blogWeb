@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-05-25 17:49:02
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-15 17:17:31
+ * @LastEditTime: 2022-01-12 17:53:39
  * @FilePath: \blog\blogweb\src\components\smallBell.vue
 -->
 <template>
@@ -140,6 +140,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['app_Background_Url']),
     ...mapState('login', ['Users']),
     ...mapState('admin', [
       'Users_Chat_Content',
@@ -319,9 +320,10 @@ export default {
       const body = document.getElementById('app')
       if (newV) {
         body.style.cssText =
-          'width: 100%; height: 100%; position: fixed; left: 0; overflow: hidden;'
+          this.app_Background_Url + 'width: 100%; height: 100%; position: fixed; left: 0; overflow: hidden;'
       } else {
-        body.removeAttribute('style')
+        body.style.cssText = this.app_Background_Url
+        // body.removeAttribute('style')
       }
     }
   }
