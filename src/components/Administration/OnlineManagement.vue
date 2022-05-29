@@ -13,7 +13,7 @@
         :key='i'
         class='Administration_Right_Lander_Item width_Big'>
         <div class='Administration_Right_Lander_Bg_Wrap'>
-          <i class='fa' :class='c.icon' aria-hidden='true'/>
+          <i class='fa' :class='c.icon' aria-hidden='true' />
         </div>
         <div class='Administration_Right_Lander_Nm'>
           <p v-if="c.code === 'ON_LINE'">{{ ON_LINE }}+</p>
@@ -70,7 +70,7 @@ export default {
         { title: '账号', prop: 'admin_Code' },
         { title: '昵称', prop: 'nick_Name' },
         { title: '角色', prop: 'role_Name' },
-        { title: '登录设备', prop: 'Login_Device' },
+        { title: '登录设备', prop: 'login_Device' },
         { title: '注册时间', prop: 'created_At', width: '200' }
       ],
       tab_Data: [],

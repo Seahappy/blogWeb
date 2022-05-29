@@ -2,111 +2,161 @@
  * @Author: Cxy
  * @Date: 2021-05-25 17:49:02
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-12 17:53:39
- * @FilePath: \blog\blogweb\src\components\smallBell.vue
+ * @LastEditTime: 2022-05-25 21:55:36
+ * @FilePath: \blogGitee\blogWeb\src\components\smallBell.vue
 -->
 <template>
   <div ref='smallbell'>
-    <i v-if='massage_Num > 0 && !chat_ShowH' class='fa fa-bell' width='30px' height='33px' viewBox='0 0 50 54' aria-hidden='true'
-       @click='Chat_Box_SH'/>
+    <i
+      v-if='massage_Num > 0 && !chat_ShowH'
+      class='fa fa-bell'
+      width='30px'
+      height='33px'
+      viewBox='0 0 50 54'
+      aria-hidden='true'
+      @click='Chat_Box_SH'/>
     <span v-if='massage_Num > 0 && !chat_ShowH' class='massage_Num_Icon'>{{
       massage_Num > 99 ? "..." : massage_Num
     }}</span>
     <div v-if='chat_ShowH' class='chat_Mask'>
       <div class='chat_Wrap'>
         <div class='chat_Content'>
-          <div class='chat_People' :style="{
-            width: Smallbell_SB ? '20%' : Chact_People_SH ? '50%' : '0',
-          }">
+          <div
+            class='chat_People'
+            :style="{
+              width: Smallbell_SB ? '20%' : Chact_People_SH ? '50%' : '0',
+            }">
             <div class='chat_Oneself'>
-              <SHImage v-if='Users.head_Portrait' class='head_Portrait_Img' :src='Users.head_Portrait' />
-              <i v-else class='fa fa-user-circle' aria-hidden='true'/>
+              <SHImage
+                v-if='Users.head_Portrait'
+                class='head_Portrait_Img'
+                :src='Users.head_Portrait'/>
+              <i v-else class='fa fa-user-circle' aria-hidden='true' />
               <div>
                 <p>
                   {{ Users.nick_Name || Users.admin_Code }}
                 </p>
                 <p>
-                  <i class='fa' :class="audIconHD ? 'fa-bell-o' : 'fa-bell-slash-o'" aria-hidden='true' :style="{
-                    backgroundColor: audIconHD ? '#005c00' : '#b20000',
-                  }" @click='mute_Aud()'/>
-                  <i v-if='Login_Device_Code(true)' class='fa' :class="
-                    voice_Announcements
-                      ? 'fa-microphone'
-                      : 'fa-microphone-slash'
-                  " aria-hidden='true' :style="{
-                    backgroundColor: voice_Announcements
-                      ? '#005c00'
-                      : '#b20000',
-                  }" @click='voice_Announcements = !voice_Announcements'/>
+                  <i
+                    class='fa'
+                    :class="audIconHD ? 'fa-bell-o' : 'fa-bell-slash-o'"
+                    aria-hidden='true'
+                    :style="{
+                      backgroundColor: audIconHD ? '#005c00' : '#b20000',
+                    }"
+                    @click='mute_Aud()'/>
+                  <i
+                    v-if='Login_Device_Code(true)'
+                    class='fa'
+                    :class="
+                      voice_Announcements
+                        ? 'fa-microphone'
+                        : 'fa-microphone-slash'
+                    "
+                    aria-hidden='true'
+                    :style="{
+                      backgroundColor: voice_Announcements
+                        ? '#005c00'
+                        : '#b20000',
+                    }"
+                    @click='voice_Announcements = !voice_Announcements'/>
                 </p>
               </div>
             </div>
             <div v-show='Chact_People_SH' class='chat_People_List_Wrap'>
-              <div v-for='(c, i) in Object.keys(chat_data)' :key='i' class='chat_People_List' :class="
-                active_Table_List === c ? 'Active_Chat_People_List' : ''
-              " @click='open_Chat_List(c)'>
+              <div
+                v-for='(c, i) in Object.keys(chat_data)'
+                :key='i'
+                class='chat_People_List'
+                :class="
+                  active_Admin_Code === c ? 'Active_Chat_People_List' : ''
+                "
+                @click='open_Chat_List(c)'>
                 <p>
-                  <span style='font-size: 16px; color: #000' :style="{
-                    color:
-                      chat_data[c].online_Offline === 1 ? '#000' : '#767676',
-                  }">{{
-                    chat_data[c].receive_People_Data.nick_Name || c
-                  }}</span>
+                  <span
+                    style='font-size: 16px; color: #000'
+                    :style="{
+                      color: chat_data[c].at(-1).receive_Online_Offline
+                        ? '#000'
+                        : '#767676',
+                    }">{{
+                      (chat_data[c].at(-1).send_Admin_Code === Users.admin_Code
+                        ? chat_data[c].at(-1).receive_Nick_Name
+                        : chat_data[c].at(-1).send_Nick_Name) || c
+                    }}</span>
                   <span style='float: right; line-height: 20px'>{{
-                    chat_data[c].chat_Content.length !== 0
+                    chat_data[c].at(-1).sending_Time
                       ? $options.filters.dateFilter(
-                        chat_data[c].chat_Content[
-                          chat_data[c].chat_Content.length - 1
-                        ].Sending_Time,
+                        chat_data[c].at(-1).sending_Time,
                         "APM"
                       )
                       : ""
                   }}</span>
                 </p>
-                <p v-if='chat_data[c].chat_Content.length > 0'>
-                  {{
-                    chat_data[c].chat_Content[
-                      chat_data[c].chat_Content.length - 1
-                    ].chat_Content
-                  }}
+                <p v-if='chat_data[c].length'>
+                  {{ chat_data[c].at(-1).chat_Content }}
                 </p>
-                <p v-else/>
+                <p v-else />
               </div>
             </div>
           </div>
-          <div class='chat_Massage' :style="{
-            width: Smallbell_SB ? '80%' : Chact_People_SH ? '50%' : '100%',
-          }">
+          <div
+            class='chat_Massage'
+            :style="{
+              width: Smallbell_SB ? '80%' : Chact_People_SH ? '50%' : '100%',
+            }">
             <p>
-              <span v-if='!Smallbell_SB' style='float: left; position: relative; left: 10px' @click='Chact_People_SH = !Chact_People_SH'>{{ Chact_People_SH ? "⬅" : "➡" }}</span>
+              <span
+                v-if='!Smallbell_SB'
+                style='float: left; position: relative; left: 10px'
+                @click='Chact_People_SH = !Chact_People_SH'>{{ Chact_People_SH ? "⬅" : "➡" }}</span>
               {{
-                chat_Content_Data.receive_People_Data.nick_Name ||
-                  chat_Content_Data.receive_People_Data.admin_Code
+                chat_data[active_Admin_Code].at(-1).receive_Nick_Name ||
+                  chat_data[active_Admin_Code].at(-1).receive_Admin_Code
               }}
               <span style='font-size: 12px; color: #7e7e7e'>
-                <i v-if='
-                  chat_data[chat_Content_Data.receive_People_Data.admin_Code]
-                    .online_Offline === 1
-                ' class='fa' :class='
-                  device_List[
-                    chat_data[
-                      chat_Content_Data.receive_People_Data.admin_Code
-                    ].Login_Device
-                  ]
-                ' aria-hidden='true'>
+                <i
+                  v-if='
+                    chat_data[active_Admin_Code].at(-1).receive_Online_Offline
+                  '
+                  class='fa'
+                  :class='
+                    device_List[
+                      chat_data[active_Admin_Code].at(-1).receive_Login_Device
+                    ]
+                  '
+                  aria-hidden='true'>
                   在线</i>
                 <span v-else>离线</span>
               </span>
               <SHButton type='primary' @click.prevent='Close_Chat_Box()'>×</SHButton>
             </p>
             <ul ref='chat'>
-              <li v-for='(c, i) in chat_Content_Data.chat_Content' :key='i' :class="c.send_Receive === 2 ? 'even' : 'odd'">
-                <SHImage class='head_Portrait_Img' title='头像' :src='(c.send_Receive === 2 ? chat_data[active_Table_List].receive_People_Data.head_Portrait : Users.head_Portrait)' />
-                {{ c.chat_Content }}
-              </li>
+              <template v-for='(c, i) in chat_data[active_Admin_Code]'>
+                <li
+                  v-if='c.chat_Content'
+                  :key='i'
+                  :class="
+                    c.send_Admin_Code !== Users.admin_Code ? 'even' : 'odd'
+                  ">
+                  <SHImage
+                    class='head_Portrait_Img'
+                    title='头像'
+                    :src='
+                      c.send_Admin_Code !== Users.admin_Code
+                        ? c.receive_Head_Portrait
+                        : Users.head_Portrait
+                    '/>
+                  {{ c.chat_Content }}
+                </li>
+              </template>
             </ul>
             <p>
-              <input v-model='chat_Content' type='text' placeholder='请输入发送的内容' @keydown.enter='chact_Send()' >
+              <input
+                v-model='chat_Content'
+                type='text'
+                placeholder='请输入发送的内容'
+                @keydown.enter='chact_Send()'>
               <SHButton type='primary' @click.prevent='chact_Send()'>发送</SHButton>
             </p>
           </div>
@@ -119,15 +169,15 @@
 <script>
 import { Login_Device_Code, bus } from '@/until'
 import { mapState, mapGetters } from 'vuex'
+import { get_Chat_Data } from '@/http/model/chat'
 export default {
   data() {
     return {
       chat_data: {},
       chat_ShowH: false,
       chat_Content: '', // 聊天内容
-      chat_Content_Data: [], // 聊天记录展示
       massage_Num: 0,
-      active_Table_List: '',
+      active_Admin_Code: '',
       Chact_People_SH: true,
       Smallbell_SB: true,
       device_List: {
@@ -142,76 +192,55 @@ export default {
   computed: {
     ...mapState(['app_Background_Url']),
     ...mapState('login', ['Users']),
-    ...mapState('admin', [
-      'Users_Chat_Content',
-      'Lander_Data',
-      'aud',
-      'audIconHD'
-    ]),
+    ...mapState('admin', ['Lander_Data', 'aud', 'audIconHD']),
     ...mapGetters('admin', ['mute_Aud'])
   },
   methods: {
     // 点击聊天左侧联系人
     open_Chat_List(c) {
-      this.chat_Content_Data = this.chat_data[c]
+      this.active_Admin_Code = c
       this.Chat_Window()
-      this.active_Table_List = c
     },
     // 发送消息
     chact_Send() {
       const {
-        chat_Content_Data: { receive_People_Data },
         chat_Content,
-        Users: { admin_Code, nick_Name, head_Portrait }
+        Users: { admin_Code, nick_Name, head_Portrait },
+        active_Admin_Code
       } = this
       if (chat_Content === '') return this.$Msg('请输入内容', 'wran')
-      const chat_Content_Time = {
-        chat_Content,
-        Sending_Time: new Date().getTime(),
-        send_Receive: 1
-      }
-      this.chat_data[receive_People_Data.admin_Code].chat_Content.push(
-        chat_Content_Time
-      )
-      this.Chat_Window()
-      const send_People_Data = {
-        admin_Code,
-        Login_Device: Login_Device_Code(),
-        nick_Name,
-        head_Portrait
-      }
       this.SK.emit('send_Message_Data', {
-        send_People_Data,
-        receive_People_Data,
-        chat_Content_Time
+        send_Admin_Code: admin_Code,
+        send_Login_Device: Login_Device_Code(),
+        send_Nick_Name: nick_Name,
+        send_Head_Portrait: head_Portrait,
+        receive_Admin_Code: active_Admin_Code,
+        chat_Content
       })
       this.chat_Content = ''
     },
     // 接收消息
     receive_Message() {
       this.SK.socket.on('receive_Message_Data', (data) => {
-        const {
-          send_People_Data,
-          receive_People_Data,
-          chat_Content_Time,
-          receive_People_Data: { admin_Code, nick_Name },
-          chat_Content_Time: { chat_Content }
-        } = data
-        this.latest_News_admin_Code = admin_Code
+        const { chat_Content, send_Admin_Code, send_Nick_Name } = data
+        this.latest_News_admin_Code = send_Admin_Code
         this.massage_Num++
-        if (this.chat_data[admin_Code] === undefined) {
-          this.chat_data[admin_Code] = {
-            send_People_Data,
-            receive_People_Data,
-            chat_Content: [chat_Content_Time]
-          }
+        if (!this.chat_data[send_Admin_Code]) {
+          this.chat_data[send_Admin_Code] = [
+            {
+              ...data,
+              receive_Online_Offline: 1
+            }
+          ]
         } else {
-          this.chat_data[admin_Code].send_People_Data = send_People_Data
-          this.chat_data[admin_Code].receive_People_Data = receive_People_Data
-          this.chat_data[admin_Code].chat_Content.push(chat_Content_Time)
+          this.chat_data[send_Admin_Code].push({
+            ...data,
+            receive_Online_Offline: 1
+          })
         }
         this.aud.play()
-        const msgV = (nick_Name || admin_Code) + '发来消息说' + chat_Content
+        const msgV =
+          (send_Nick_Name || send_Admin_Code) + '发来消息说' + chat_Content
         this.speech_Synthesis(msgV, 1000)
         this.Chat_Window()
       })
@@ -238,13 +267,12 @@ export default {
     Chat_Box_SH() {
       this.massage_Num = 0
       this.chat_ShowH = true
-      this.active_Table_List = this.latest_News_admin_Code
-      this.chat_Content_Data = this.chat_data[this.active_Table_List]
+      this.active_Admin_Code = this.latest_News_admin_Code
       this.Chat_Window()
     },
     Chat_Window() {
       if (this.chat_ShowH) {
-        this.$nextTick(_ => {
+        this.$nextTick((_) => {
           this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight
           //   this.$refs.chat.lastElementChild.scrollIntoView();
           if (this.$refs.smallbell.parentElement.clientWidth < 750) {
@@ -254,32 +282,57 @@ export default {
           }
         })
       }
+    },
+    echo_Message() {
+      this.SK.socket.on('echo_Message_Data', (data) => {
+        const { active_Admin_Code } = this
+        this.chat_data[active_Admin_Code].push({
+          ...data,
+          receive_Online_Offline: 1
+        })
+        this.Chat_Window()
+      })
+    },
+    get_Chat_Data_Oper() {
+      return new Promise((resolve) => {
+        get_Chat_Data({ admin_Code: this.Users.admin_Code }).then(
+          ({
+            data: {
+              data: { data }
+            }
+          }) => {
+            this.chat_data = data
+            resolve()
+          }
+        )
+      })
     }
   },
   mounted() {
     bus.$on('receive_Message', () => {
       this.receive_Message()
+      this.echo_Message()
     })
     if (this.SK.socket) {
       this.receive_Message()
+      this.echo_Message()
     }
     bus.$on('send_Chat_Person', (c = {}) => {
       this.chat_ShowH = true
-      const { Login_Device, admin_Code = Object.keys(this.chat_data)[0] } = c
-      if (this.chat_data[admin_Code] === undefined) {
-        this.chat_data[admin_Code] = {
-          send_People_Data: {
-            admin_Code: this.Users.admin_Code,
-            Login_Device: Login_Device_Code()
-          },
-          receive_People_Data: { admin_Code, Login_Device },
-          chat_Content: [],
-          online_Offline: 1,
-          Login_Device
-        }
+      const { login_Device, admin_Code, head_Portrait, nick_Name } = c
+      if (!this.chat_data[admin_Code]) {
+        this.chat_data[admin_Code] = [
+          {
+            receive_Admin_Code: admin_Code,
+            receive_Head_Portrait: head_Portrait,
+            receive_Nick_Name: nick_Name,
+            receive_Login_Device: login_Device,
+            receive_Online_Offline: 1,
+            chat_Content: ''
+          }
+        ]
       }
-      this.active_Table_List = admin_Code
-      this.chat_Content_Data = this.chat_data[admin_Code]
+      this.active_Admin_Code = admin_Code
       this.Chat_Window()
     })
   },
@@ -289,29 +342,24 @@ export default {
         this.Close_Chat_Box()
       }
     },
-    Users_Chat_Content: function(newV) {
-      if (newV) {
-        this.chat_data = newV
-      }
-    },
     Lander_Data: {
-      handler(newV) {
+      async handler(newV) {
+        if (!Object.keys(this.chat_data).length) {
+          await this.get_Chat_Data_Oper()
+        }
         const online_Users = newV[0].Login_Users_Arrangement.map((c) => {
-          if (Object.keys(this.chat_data).includes(c.admin_Code)) {
-            this.$set(
-              this.chat_data[c.admin_Code],
-              'Login_Device',
-              c.Login_Device
-            )
+          if (this.chat_data[c.admin_Code]) {
+            this.chat_data[c.admin_Code].at(-1).receive_Login_Device =
+              c.login_Device
           }
           return c.admin_Code
         })
         Object.keys(this.chat_data).forEach((c) => {
-          if (online_Users.includes(c)) {
-            this.$set(this.chat_data[c], 'online_Offline', 1)
-          } else {
-            this.$set(this.chat_data[c], 'online_Offline', 2)
-          }
+          this.$set(
+            this.chat_data[c].at(-1),
+            'receive_Online_Offline',
+            online_Users.includes(c) ? 1 : 0
+          )
         })
       },
       deep: true
@@ -320,7 +368,8 @@ export default {
       const body = document.getElementById('app')
       if (newV) {
         body.style.cssText =
-          this.app_Background_Url + 'width: 100%; height: 100%; position: fixed; left: 0; overflow: hidden;'
+          this.app_Background_Url +
+          'width: 100%; height: 100%; position: fixed; left: 0; overflow: hidden;'
       } else {
         body.style.cssText = this.app_Background_Url
         // body.removeAttribute('style')
@@ -542,7 +591,7 @@ export default {
         }
         p:last-child {
           input {
-            width: calc(~'100% - 80px');
+            width: calc(~"100% - 80px");
             height: 34px;
             border: 0;
             padding: 0;
@@ -560,7 +609,7 @@ export default {
         }
         ul {
           width: 100%;
-          height: calc(~'100% - 72px');
+          height: calc(~"100% - 72px");
           padding: 20px 20px 0 10px;
           list-style: none;
           overflow-y: scroll;
@@ -580,7 +629,7 @@ export default {
             display: inline-block;
             padding: 12px 16px 12px 24px;
             margin: 0 0 20px 0;
-            font: 14px/20px 'Noto Sans', sans-serif;
+            font: 14px/20px "Noto Sans", sans-serif;
             border-radius: 10px;
             background-color: rgba(25, 147, 147, 0.2);
             .head_Portrait_Img {
@@ -605,7 +654,7 @@ export default {
           .odd:after {
             position: absolute;
             top: 12px;
-            content: '';
+            content: "";
             width: 0;
             height: 0;
             border-left: 10px solid cadetblue;
@@ -616,7 +665,7 @@ export default {
           .even:after {
             position: absolute;
             top: 12px;
-            content: '';
+            content: "";
             width: 0;
             height: 0;
             border-right: 10px solid #588371;

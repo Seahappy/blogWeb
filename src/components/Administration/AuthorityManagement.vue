@@ -79,7 +79,7 @@ export default {
         { title: '昵称', prop: 'nick_Name' },
         { title: '角色', prop: 'role_Name' },
         { title: '冻结状态', prop: 'frozen' },
-        { title: '登录设备', prop: 'Login_Device' },
+        { title: '登录设备', prop: 'login_Device' },
         { title: '注册时间', prop: 'created_At', width: '200' }
       ],
       open_Close_id: '', // 角色展示隐藏

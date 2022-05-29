@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-02-27 23:04:28
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-11 17:37:34
- * @FilePath: \blog\blogweb\src\views\Home.vue
+ * @LastEditTime: 2022-05-26 10:13:52
+ * @FilePath: \ehomes-admind:\blog\blogWeb\src\views\Home.vue
 -->
 <template>
   <div class='home_Wrap'>
@@ -312,6 +312,7 @@ export default {
       } else {
         data = await this.article_Find_New_Like_Data(name)
       }
+      if (!data.length) return
       this.article_Like_New_Data = data
       this.active_Data = data[0]
       this.active_Id = data[0]._id

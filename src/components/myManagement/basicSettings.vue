@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-06-17 16:16:55
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-13 19:35:56
- * @FilePath: \blog\blogweb\src\components\myManagement\basicSettings.vue
+ * @LastEditTime: 2022-05-26 10:22:57
+ * @FilePath: \ehomes-admind:\blog\blogWeb\src\components\myManagement\basicSettings.vue
 -->
 <template>
   <div class='basicSettings'>
@@ -281,6 +281,11 @@ export default {
           background: #409eff;
           color: #fff;
           cursor: pointer;
+          &:hover {
+            background-color: #6ab4ff;
+            color: #fff;
+            border-color: #6ab4ff;
+          }
         }
       }
     }

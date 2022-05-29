@@ -2,18 +2,21 @@
  * @Author: Cxy
  * @Date: 2021-05-18 19:18:37
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-13 19:35:18
- * @FilePath: \blog\blogweb\src\components\subgroups\from\button.vue
+ * @LastEditTime: 2022-05-26 10:03:42
+ * @FilePath: \ehomes-admind:\blog\blogWeb\src\components\subgroups\from\button.vue
 -->
 <template>
-  <button class='SHButton' type='button' :class="
-    (disabled === true ? '_disabled disStyle' : '') +
-      ' ' +
-      (icon !== undefined ? 'icon' : '') + ' ' +
-      type
-  " @click='handleClick'>
-    <i v-if='icon' class='fa' :class='icon' aria-hidden='true'/>
-    <slot/>
+  <button
+    class='SHButton'
+    type='button'
+    :class="
+      (disabled === true ? type + '_disabled disStyle' : type) +
+        ' ' +
+        (icon ? 'icon' : '')
+    "
+    @click='handleClick'>
+    <i v-if='icon' class='fa' :class='icon' aria-hidden='true' />
+    <slot />
   </button>
 </template>
 
@@ -90,7 +93,7 @@ export default {
     border-color: #6ab4ff;
   }
 }
-.primary_disabled {
+.disStyle.primary_disabled {
   color: #fff;
   background-color: #a0cfff;
   border-color: #a0cfff;
@@ -105,7 +108,7 @@ export default {
     border-color: #ee8f8f;
   }
 }
-.danger_disabled {
+.disStyle.danger_disabled {
   color: #fff;
   background-color: #fab6b6;
   border-color: #fab6b6;
@@ -120,7 +123,7 @@ export default {
     border-color: #e7b466;
   }
 }
-.warn_disabled {
+.disStyle.warn_disabled {
   color: #fff;
   background-color: #f3d19e;
   border-color: #f3d19e;
@@ -135,7 +138,7 @@ export default {
     border-color: #76d149;
   }
 }
-.success_disabled {
+.disStyle.success_disabled {
   color: #fff;
   background-color: #93cc76;
   border-color: #93cc76;

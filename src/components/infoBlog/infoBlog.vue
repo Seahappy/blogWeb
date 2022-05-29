@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-04-12 10:02:09
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-29 17:43:39
- * @FilePath: \blog\blogweb\src\components\infoBlog\infoBlog.vue
+ * @LastEditTime: 2022-05-27 22:59:16
+ * @FilePath: \blogGitee\blogWeb\src\components\infoBlog\infoBlog.vue
 -->
 
 <template>
@@ -788,6 +788,7 @@ export default {
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease-out 0s;
+        cursor: pointer;
         i {
           color: white;
         }
@@ -811,8 +812,12 @@ export default {
           border-radius: 50%;
         }
       }
+      i {
+        cursor: pointer;
+      }
       i:nth-child(1) {
-        font-size: 75px;
+        font-size: 975px;
+        cursor: auto;
       }
       h2 {
         font-size: 20px;

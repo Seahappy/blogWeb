@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-04-28 19:34:13
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-26 16:56:34
- * @FilePath: \blog\blogweb\src\socket\index.js
+ * @LastEditTime: 2022-05-25 13:54:01
+ * @FilePath: \ehomes-admind:\blog\blogWeb\src\socket\index.js
  */
 
 import Vuex from '../store'
@@ -58,11 +58,10 @@ if (Vuex.state.login.Users.admin_Code !== '') {
   socket.connect()
   Vuex.dispatch('login/get_Router_Data', Vuex.state.login.Users.admin_Code)
   // 发送当前登陆人信息以重置登陆人socketID
-  socket.socket.emit('Refresh_Get_User', { admin_Code: Vuex.state.login.Users.admin_Code, Login_Device: Login_Device_Code() })
+  socket.socket.emit('Refresh_Get_User', { admin_Code: Vuex.state.login.Users.admin_Code, login_Device: Login_Device_Code() })
   // 接收在线人数信息
   socket.socket.on('Login_Users', data => {
     if (data.data) Vuex.commit('admin/pass_User_Data', data.data)
-    if (data.Users_Chat_Content) Vuex.commit('admin/pass_Users_Chat_Content', data.Users_Chat_Content)
   })
 }
 export default socket

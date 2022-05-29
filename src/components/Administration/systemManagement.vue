@@ -3,42 +3,71 @@
  * @Author: Cxy
  * @Date: 2021-09-23 14:45:30
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-07 16:28:34
+ * @LastEditTime: 2022-05-29 16:32:13
  * @FilePath: \blog\blogweb\src\components\Administration\systemManagement.vue
 -->
 <template>
   <div class='sysTem'>
     <div class='seconds_Threshold'>
-      <SHButton type='primary' icon='fa fa-spinner fa-pulse' @click='get_System_Opartion'>刷新</SHButton>
-      <SHButton v-for='c in secondsTime' :key='c' :type="selectSecondsT === c ? 'primary' : ''" @click='select_Opartion(c)'>{{ c }}S</SHButton>
+      <SHButton
+        type='primary'
+        icon='fa fa-spinner fa-pulse'
+        @click='get_System_Opartion'>刷新</SHButton>
+      <SHButton
+        v-for='c in secondsTime'
+        :key='c'
+        :type="selectSecondsT === c ? 'primary' : ''"
+        @click='select_Opartion(c)'>{{ c }}S</SHButton>
       <span>cpu：</span>
-      <SHInput v-model='threshold.alarmValCpu' min='50' max='100' step='5' type='number' oninput='if(value>100)value=100;if(value.length>4)value=value.slice(0,4);if(value<=50)value=50'
-               @input="changeIpt('alarmValCpu')"/>
+      <SHInput
+        v-model='threshold.alarmValCpu'
+        min='50'
+        max='100'
+        step='5'
+        type='number'
+        oninput='if(value>100)value=100;if(value.length>4)value=value.slice(0,4);if(value<=50)value=50'
+        @input="changeIpt('alarmValCpu')"/>
       <span>内存：</span>
-      <SHInput v-model='threshold.alarmValMem' min='50' max='100' step='5' type='number' oninput='if(value>100)value=100;if(value.length>4)value=value.slice(0,4);if(value<=50)value=50'
-               @input="changeIpt('alarmValMem')"/>
+      <SHInput
+        v-model='threshold.alarmValMem'
+        min='50'
+        max='100'
+        step='5'
+        type='number'
+        oninput='if(value>100)value=100;if(value.length>4)value=value.slice(0,4);if(value<=50)value=50'
+        @input="changeIpt('alarmValMem')"/>
       <span>磁盘：</span>
-      <SHInput v-model='threshold.alarmValDisk' min='50' max='100' step='5' type='number' oninput='if(value>100)value=100;if(value.length>4)value=value.slice(0,4);if(value<=50)value=50'
-               @input="changeIpt('alarmValDisk')"/>
-      <SHToolTip eventType='hover' direction='right' iconColor='#606266' style='text-indent: 0;'>
+      <SHInput
+        v-model='threshold.alarmValDisk'
+        min='50'
+        max='100'
+        step='5'
+        type='number'
+        oninput='if(value>100)value=100;if(value.length>4)value=value.slice(0,4);if(value<=50)value=50'
+        @input="changeIpt('alarmValDisk')"/>
+      <SHToolTip
+        eventType='hover'
+        direction='right'
+        iconColor='#606266'
+        style='text-indent: 0'>
         <p>1.阈值可根据实际情况调整大小</p>
         <p>2.阈值不得低于50，不高于100</p>
-        <i slot='icon' class='fa fa-question-circle' aria-hidden='true'/>
+        <i slot='icon' class='fa fa-question-circle' aria-hidden='true' />
       </SHToolTip>
     </div>
-    <div class='sysTem_Echarts'>
-      <div class='item_System' :style="{width: browWidth * 0.21 + 'px'}">
+    <div class='sysTem_Echarts' style='height: 36%;'>
+      <div class='item_System' style='width: 29%'>
         <p>CPU</p>
         <div class='Echarts_Describe'>
           <div ref='cpu_Echarts' class='cpu_Echarts' />
           <div class='cpu_Mem_Describe'>
-            <span><i>满载率：</i><strong>{{ cpuDescribe.fullLoad + '%' }}</strong></span>
-            <span><i>用户负载：</i><strong>{{ cpuDescribe.currentLoadUser + '%' }}</strong></span>
-            <span><i>系统负载：</i><strong>{{ cpuDescribe.currentLoadSystem + '%' }}</strong></span>
+            <span><i>满载率：</i><strong>{{ cpuDescribe.fullLoad + "%" }}</strong></span>
+            <span><i>用户负载：</i><strong>{{ cpuDescribe.currentLoadUser + "%" }}</strong></span>
+            <span><i>系统负载：</i><strong>{{ cpuDescribe.currentLoadSystem + "%" }}</strong></span>
           </div>
         </div>
       </div>
-      <div class='item_System' :style="{width: browWidth * 0.21 + 'px'}">
+      <div class='item_System' style='width: 29%'>
         <p>内存</p>
         <div class='Echarts_Describe'>
           <div ref='mem_Echarts' class='cpu_Echarts' />
@@ -49,66 +78,84 @@
           </div>
         </div>
       </div>
-      <div class='item_System'>
+      <div class='item_System' style='width: 39%'>
         <p>磁盘</p>
         <div class='Echarts_Describe'>
           <div ref='disk_Echarts' class='disk_Echarts' />
         </div>
       </div>
-      <div class='item_System'>
+    </div>
+    <div class='sysTem_Echarts' style='height: 56%;'>
+      <div class='item_System' style='width: 34%'>
         <p>
           网络
-          <SHToolTip eventType='hover' direction='top' iconColor='#303133' style='text-indent: 0;'>
+          <SHToolTip
+            eventType='hover'
+            direction='top'
+            iconColor='#303133'
+            style='text-indent: 0'>
             <p>1.由于数据没有入库，网速只显示为当前时间的数值</p>
             <p>2.网速显示为当前调用时间间隔的平均值</p>
-            <i slot='icon' class='fa fa-question-circle' aria-hidden='true'/>
+            <i slot='icon' class='fa fa-question-circle' aria-hidden='true' />
           </SHToolTip>
         </p>
         <div class='Echarts_Describe'>
           <div class='net_Describe'>
-            <div>发送(总)：<span style='font-weight: bold;'>{{ netDescribe.tx_bytes }}</span></div>
-            <div>接收(总)：<span style='font-weight: bold;'>{{ netDescribe.rx_bytes }}</span></div>
+            <div>
+              发送(总)：<span style='font-weight: bold'>{{
+                netDescribe.tx_bytes
+              }}</span>
+            </div>
+            <div>
+              接收(总)：<span style='font-weight: bold'>{{
+                netDescribe.rx_bytes
+              }}</span>
+            </div>
           </div>
           <div ref='net_Echarts' class='net_Echarts' />
         </div>
       </div>
-      <div class='item_System'>
+      <div class='item_System' style='width: 24%'>
         <p>服务器时间</p>
-        <div ref='clock_Echarts' class='clock_Echarts'/>
+        <div ref='clock_Echarts' class='clock_Echarts' />
       </div>
-      <div class='item_System'>
+      <div class='item_System' style='width: 19%'>
         <p>主机名</p>
-        <div class='hostNameLogo_System'>{{ hostNameLogofileDescribe.hostName }}</div>
+        <div class='hostNameLogo_System'>
+          {{ hostNameLogofileDescribe.hostName }}
+        </div>
         <p>操作系统</p>
-        <div class='hostNameLogo_System'>{{ hostNameLogofileDescribe.Logofile }}</div>
+        <div class='hostNameLogo_System'>
+          {{ hostNameLogofileDescribe.Logofile }}
+        </div>
         <p>程序运行时间</p>
-        <div class='node_Serve_Time' :style="{width: browWidth * 0.103 + 'px'}">
-          <span>{{ nodeServeUptime.nodeUptime.split(',')[0] }}</span>
+        <div class='node_Serve_Time'>
+          <span>{{ nodeServeUptime.nodeUptime.split(",")[0] }}</span>
           <span>天</span>
         </div>
         <div>
-          <span>{{ nodeServeUptime.nodeUptime.split(',')[1] }}</span>
+          <span>{{ nodeServeUptime.nodeUptime.split(",")[1] }}</span>
           <span>时</span>
-          <span>{{ nodeServeUptime.nodeUptime.split(',')[2] }}</span>
+          <span>{{ nodeServeUptime.nodeUptime.split(",")[2] }}</span>
           <span>分</span>
-          <span>{{ nodeServeUptime.nodeUptime.split(',')[3] }}</span>
+          <span>{{ nodeServeUptime.nodeUptime.split(",")[3] }}</span>
           <span>秒</span>
         </div>
         <p>系统运行时间</p>
-        <div class='node_Serve_Time' :style="{width: browWidth * 0.103 + 'px'}">
-          <span>{{ nodeServeUptime.systemTime.split(',')[0] }}</span>
+        <div class='node_Serve_Time'>
+          <span>{{ nodeServeUptime.systemTime.split(",")[0] }}</span>
           <span>天</span>
         </div>
         <div>
-          <span>{{ nodeServeUptime.systemTime.split(',')[1] }}</span>
+          <span>{{ nodeServeUptime.systemTime.split(",")[1] }}</span>
           <span>时</span>
-          <span>{{ nodeServeUptime.systemTime.split(',')[2] }}</span>
+          <span>{{ nodeServeUptime.systemTime.split(",")[2] }}</span>
           <span>分</span>
-          <span>{{ nodeServeUptime.systemTime.split(',')[3] }}</span>
+          <span>{{ nodeServeUptime.systemTime.split(",")[3] }}</span>
           <span>秒</span>
         </div>
       </div>
-      <div class='item_System' style='padding: 1.5% 5px 1.5% 1.5%;display: flex;flex-direction: column;' :style="{width: browWidth * 0.13 + 'px',height: browHeight * 0.39 + 'px'}">
+      <div class='item_System' style='width: 19%'>
         <p>主要进程</p>
         <ul>
           <li v-if='!processList'>
@@ -117,9 +164,58 @@
             <div><span>启动时间</span><span>加载中...</span></div>
           </li>
           <li v-for='c in processList' :key='c.pid'>
-            <div><span>进程名</span><span>{{ c.name || '加载中...' }}</span></div>
-            <div><span>内存</span><span>{{ parseInt(c.memRss/1024) ? parseInt(c.memRss/1024) + 'MB' : '加载中...' }}</span></div>
-            <div><span>启动时间</span><span>{{ c.started || '加载中...' }}</span></div>
+            <div>
+              <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
+            </div>
+            <div>
+              <span>内存</span><span>{{
+                parseInt(c.memRss / 1024)
+                  ? parseInt(c.memRss / 1024) + "MB"
+                  : "加载中..."
+              }}</span>
+            </div>
+            <div>
+              <span>启动时间</span><span>{{ c.started || "加载中..." }}</span>
+            </div>
+            <div>
+              <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
+            </div>
+            <div>
+              <span>内存</span><span>{{
+                parseInt(c.memRss / 1024)
+                  ? parseInt(c.memRss / 1024) + "MB"
+                  : "加载中..."
+              }}</span>
+            </div>
+            <div>
+              <span>启动时间</span><span>{{ c.started || "加载中..." }}</span>
+            </div>
+            <div>
+              <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
+            </div>
+            <div>
+              <span>内存</span><span>{{
+                parseInt(c.memRss / 1024)
+                  ? parseInt(c.memRss / 1024) + "MB"
+                  : "加载中..."
+              }}</span>
+            </div>
+            <div>
+              <span>启动时间</span><span>{{ c.started || "加载中..." }}</span>
+            </div>
+            <div>
+              <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
+            </div>
+            <div>
+              <span>内存</span><span>{{
+                parseInt(c.memRss / 1024)
+                  ? parseInt(c.memRss / 1024) + "MB"
+                  : "加载中..."
+              }}</span>
+            </div>
+            <div>
+              <span>启动时间</span><span>{{ c.started || "加载中..." }}</span>
+            </div>
           </li>
         </ul>
       </div>
@@ -155,7 +251,13 @@ import { get_System_Data } from '@/http/model/other.js'
 export default {
   data() {
     return {
-      rxTx_Data: Array.from({ length: 30 }, () => ({ rx_sec: 0, tx_sec: 0, newDate: this.$options.filters.dateFilter(new Date().getTime()).slice(-8) })),
+      rxTx_Data: Array.from({ length: 30 }, () => ({
+        rx_sec: 0,
+        tx_sec: 0,
+        newDate: this.$options.filters
+          .dateFilter(new Date().getTime())
+          .slice(-8)
+      })),
       timer: null,
       sysTimer: null,
       secondsTime: [10, 15, 30, 45],
@@ -175,8 +277,6 @@ export default {
         systemTime: '0,00,00,00'
       },
       processList: [],
-      browWidth: 0,
-      browHeight: 0,
       systemData: {},
       changeIptTimer: null
     }
@@ -195,7 +295,7 @@ export default {
     },
     get_System_Opartion() {
       const { selectSecondsT } = this
-      get_System_Data({ selectSecondsT }).then(res => {
+      get_System_Data({ selectSecondsT }).then((res) => {
         const { code, data } = res.data
         if (code === 200) {
           this.systemData = data
@@ -210,7 +310,10 @@ export default {
     },
     changeIpt(type) {
       const { threshold, thresholdWork } = this
-      if (this.changeIptTimer) (clearTimeout(this.changeIptTimer), this.changeIptTimer = null)
+      if (this.changeIptTimer) {
+        clearTimeout(this.changeIptTimer)
+        this.changeIptTimer = null
+      }
       this.changeIptTimer = setTimeout(() => {
         this.$MsgBox('确定更改当前警报阈值吗', 'wran')
           .then(() => {
@@ -224,15 +327,35 @@ export default {
       }, 800)
     },
     arrangument_Echarts() {
-      const { currentLoad, mem, fsSize, networkStats, time, nodeUptime, proceList } = this.systemData
-      this.cpu_Echarts.setOption(this.option_CpuMen_Echarts(currentLoad?.currentLoad?.toFixed(1) || 0, 'alarmValCpu'))
-      this.mem_Echarts.setOption(this.option_CpuMen_Echarts(((mem?.used / mem?.total) * 100).toFixed(1) || 0, 'alarmValMem'))
+      const {
+        currentLoad,
+        mem,
+        fsSize,
+        networkStats,
+        time,
+        nodeUptime,
+        proceList
+      } = this.systemData
+      this.cpu_Echarts.setOption(
+        this.option_CpuMen_Echarts(
+          currentLoad?.currentLoad?.toFixed(1) || 0,
+          'alarmValCpu'
+        )
+      )
+      this.mem_Echarts.setOption(
+        this.option_CpuMen_Echarts(
+          ((mem?.used / mem?.total) * 100).toFixed(1) || 0,
+          'alarmValMem'
+        )
+      )
       this.disk_Echarts.setOption(this.option_Disk_Echarts(fsSize?.reverse()))
       const { rxTx_Data, timer } = this
       if (networkStats?.length) {
         // rx 接收 tx 传输
         const { rx_sec, tx_sec } = networkStats[0]
-        const newDate = this.$options.filters.dateFilter(new Date().getTime()).slice(-8)
+        const newDate = this.$options.filters
+          .dateFilter(new Date().getTime())
+          .slice(-8)
         rxTx_Data.unshift({ rx_sec, tx_sec, newDate })
         rxTx_Data.pop()
       }
@@ -247,13 +370,20 @@ export default {
           const second = data.getSeconds()
           const minute = data.getMinutes() + second / 60
           const hour = (data.getHours() % 12) + minute / 60
-          this.clock_Echarts.setOption(this.option_Clock_Echarts(hour, minute, second))
+          this.clock_Echarts.setOption(
+            this.option_Clock_Echarts(hour, minute, second)
+          )
           nodeUptimeRest++
           systemTime++
-          this.nodeServeUptime = { nodeUptime: this.transformation_Time(nodeUptimeRest), systemTime: this.transformation_Time(systemTime) }
+          this.nodeServeUptime = {
+            nodeUptime: this.transformation_Time(nodeUptimeRest),
+            systemTime: this.transformation_Time(systemTime)
+          }
         }, 1000)
       }
-      if (!severTime) this.clock_Echarts.setOption(this.option_Clock_Echarts(0, 0, 0))
+      if (!severTime) {
+        this.clock_Echarts.setOption(this.option_Clock_Echarts(0, 0, 0))
+      }
       this.processList = proceList
     },
     option_CpuMen_Echarts(data, type) {
@@ -270,8 +400,16 @@ export default {
               show: true,
               width: 13,
               itemStyle: {
-                color: data < Number(thresholdWork[type]) ? '#6697FA' : '#E86452'
+                color:
+                  data < Number(thresholdWork[type]) ? '#6697FA' : '#E86452'
               }
+            },
+            grid: {
+              left: '3%',
+              right: '8%',
+              bottom: '1%',
+              top: '22%',
+              containLabel: true
             },
             // 刻度线
             axisLabel: {
@@ -286,7 +424,8 @@ export default {
               width: 8,
               keepAspect: true,
               itemStyle: {
-                color: data < Number(thresholdWork[type]) ? '#6697FA' : '#E86452'
+                color:
+                  data < Number(thresholdWork[type]) ? '#6697FA' : '#E86452'
               }
             },
             // 刻度盘内圆
@@ -296,7 +435,8 @@ export default {
               size: 18,
               itemStyle: {
                 borderWidth: 6,
-                borderColor: data < Number(thresholdWork[type]) ? '#6697FA' : '#E86452'
+                borderColor:
+                  data < Number(thresholdWork[type]) ? '#6697FA' : '#E86452'
               }
             },
             // 标题
@@ -341,11 +481,17 @@ export default {
       }
     },
     option_Disk_Echarts(data = [{ use: 0, fs: 'C:', size: 0, used: 0 }]) {
-      const { thresholdWork: { alarmValDisk }} = this
+      const {
+        thresholdWork: { alarmValDisk }
+      } = this
       const data_Echarts = data.reduce((prev, cur) => {
         prev.push({
           data: cur.use.toFixed(1),
-          dataString: JSON.stringify({ name: cur.fs.replace(/:/g, ''), dataAll: this.bytesToSize(cur.size), dataUser: this.bytesToSize(cur.used) })
+          dataString: JSON.stringify({
+            name: cur.fs.replace(/:/g, ''),
+            dataAll: this.bytesToSize(cur.size),
+            dataUser: this.bytesToSize(cur.used)
+          })
         })
         return prev
       }, [])
@@ -362,7 +508,7 @@ export default {
           max: 100
         },
         yAxis: {
-          data: data_Echarts.map(c => c.dataString),
+          data: data_Echarts.map((c) => c.dataString),
           axisLine: {
             show: false
           },
@@ -396,7 +542,7 @@ export default {
         series: [
           {
             type: 'bar',
-            data: data_Echarts.map(c => c.data),
+            data: data_Echarts.map((c) => c.data),
             colorBy: 'data',
             showBackground: true,
             backgroundStyle: {
@@ -430,8 +576,16 @@ export default {
             itemStyle: {
               borderRadius: 5,
               color: function({ value, dataIndex }) {
-                var colorList = ['#3e7dff', '#4dbb8f', '#F6BD16', '#1E9493', '#6DC8EC']
-                return value > Number(alarmValDisk) ? '#E86452' : colorList[dataIndex]
+                var colorList = [
+                  '#3e7dff',
+                  '#4dbb8f',
+                  '#F6BD16',
+                  '#1E9493',
+                  '#6DC8EC'
+                ]
+                return value > Number(alarmValDisk)
+                  ? '#E86452'
+                  : colorList[dataIndex]
               }
             }
           }
@@ -470,17 +624,26 @@ export default {
           },
           formatter: function(params) {
             const { name, data, seriesName, color } = params[0]
-            return name + '</br></br>' + seriesName + ' <span style="font-weight: bold;font-size: 14px;color: ' + color + ';"> ' + that.bytesToSize(data * 1024) + '</span>'
+            return (
+              name +
+              '</br></br>' +
+              seriesName +
+              ' <span style="font-weight: bold;font-size: 14px;color: ' +
+              color +
+              ';"> ' +
+              that.bytesToSize(data * 1024) +
+              '</span>'
+            )
           }
         },
         xAxis: [
           {
             show: false,
-            data: data.map(c => c.newDate)
+            data: data.map((c) => c.newDate)
           },
           {
             show: false,
-            data: data.map(c => c.newDate),
+            data: data.map((c) => c.newDate),
             gridIndex: 1
           }
         ],
@@ -518,7 +681,7 @@ export default {
             name: '接收',
             type: 'line',
             showSymbol: false,
-            data: data.map(c => (c.rx_sec / 1024).toFixed(1)),
+            data: data.map((c) => (c.rx_sec / 1024).toFixed(1)),
             areaStyle: {},
             itemStyle: {
               color: 'rgb(83, 90, 46)'
@@ -531,7 +694,7 @@ export default {
             name: '发送',
             type: 'line',
             showSymbol: false,
-            data: data.map(c => (c.tx_sec / 1024).toFixed(1)),
+            data: data.map((c) => (c.tx_sec / 1024).toFixed(1)),
             xAxisIndex: 1,
             yAxisIndex: 1,
             areaStyle: {},
@@ -725,10 +888,18 @@ export default {
     transformation_Time(second) {
       if (!second) return '0,0,0,0'
       const nodeDays = parseInt(second / 86400)
-      const nodeHours = parseInt(second % 86400 / 3600) + ''
-      const nodeMinutes = parseInt(second % 86400 % 3600 / 60) + ''
-      const nodeSeconds = second % 86400 % 3600 % 60 + ''
-      return nodeDays + ',' + nodeHours.padStart(2, '0') + ',' + nodeMinutes.padStart(2, '0') + ',' + nodeSeconds.padStart(2, '0')
+      const nodeHours = parseInt((second % 86400) / 3600) + ''
+      const nodeMinutes = parseInt(((second % 86400) % 3600) / 60) + ''
+      const nodeSeconds = (((second % 86400) % 3600) % 60) + ''
+      return (
+        nodeDays +
+        ',' +
+        nodeHours.padStart(2, '0') +
+        ',' +
+        nodeMinutes.padStart(2, '0') +
+        ',' +
+        nodeSeconds.padStart(2, '0')
+      )
     },
     bytesToSize(bytes) {
       if (!bytes) return '0 B'
@@ -742,8 +913,10 @@ export default {
     cpuDescribe() {
       const { systemData } = this
       const fullLoad = systemData?.fullLoad?.toFixed(1) || '0.0'
-      const currentLoadUser = systemData?.currentLoad?.currentLoadUser?.toFixed(1) || '0.0'
-      const currentLoadSystem = systemData?.currentLoad?.currentLoadSystem?.toFixed(1) || '0.0'
+      const currentLoadUser =
+        systemData?.currentLoad?.currentLoadUser?.toFixed(1) || '0.0'
+      const currentLoadSystem =
+        systemData?.currentLoad?.currentLoadSystem?.toFixed(1) || '0.0'
       return { fullLoad, currentLoadUser, currentLoadSystem }
     },
     memDescribe() {
@@ -768,15 +941,6 @@ export default {
     }
   },
   mounted() {
-    const browWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth - 230
-    const browHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-    this.browWidth = browWidth
-    this.browHeight = browHeight
-    this.$refs['cpu_Echarts'].style = `width: ${0.12 * browWidth}px;height: ${browHeight * 0.26}px`
-    this.$refs['mem_Echarts'].style = `width: ${0.12 * browWidth}px;height: ${browHeight * 0.26}px`
-    this.$refs['disk_Echarts'].style = `width: ${0.316 * browWidth}px;height: ${browHeight * 0.26}px`
-    this.$refs['net_Echarts'].style = `width: ${0.267 * browWidth}px;height: ${browHeight * 0.39}px`
-    this.$refs['clock_Echarts'].style = `width: ${0.193 * browWidth}px;height: ${browHeight * 0.39}px`
     this.cpu_Echarts = echarts.init(this.$refs['cpu_Echarts'])
     this.mem_Echarts = echarts.init(this.$refs['mem_Echarts'])
     this.disk_Echarts = echarts.init(this.$refs['disk_Echarts'])
@@ -798,12 +962,14 @@ export default {
 <style lang="less" scoped>
 .sysTem {
   width: 100%;
-  padding: 1.5%;
+  padding:1.5% 1.5% 0;
   box-sizing: border-box;
+  height: 100%;
   .seconds_Threshold {
     position: relative;
     z-index: 10;
-    margin-bottom: 1.5%;
+    height: 8%;
+    box-sizing: border-box;
     .SHButton {
       margin-right: 1%;
       padding: 10px 15px;
@@ -824,14 +990,17 @@ export default {
   .sysTem_Echarts {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
+    width: 100%;
     .item_System {
       background: aliceblue;
-      padding: 1.5% 1.5% 0px 1.5%;
+      padding: 1.5%;
       border-radius: 15px;
-      margin-bottom: 2%;
       border: solid 1px rgb(228, 235, 241);
       transition: box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      height: 92%;
       &:hover {
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
       }
@@ -843,10 +1012,18 @@ export default {
         border-left: solid 3px #2d72d3;
         text-indent: 10px;
       }
+      .cpu_Echarts,
+      .disk_Echarts,
+      .net_Echarts,
+      .clock_Echarts {
+        width: 100%;
+        height: 100%;
+      }
       .Echarts_Describe {
         display: flex;
         align-items: center;
         position: relative;
+        flex: 1;
         .cpu_Mem_Describe {
           display: flex;
           flex-direction: column;
@@ -931,8 +1108,8 @@ export default {
           background-color: #000000;
         }
         &::-webkit-scrollbar-track {
-          box-shadow: inset 0px 0px 20px 0px #0000002b;
-          background-color: #ffffff;
+          box-shadow: inset 0px 0px 20px 0px #00000000;
+          background-color: aliceblue;
         }
       }
     }

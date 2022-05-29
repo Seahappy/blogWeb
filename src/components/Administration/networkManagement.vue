@@ -3,14 +3,19 @@
  * @Author: Cxy
  * @Date: 2021-11-25 14:41:04
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-20 15:15:52
- * @FilePath: \blog\blogweb\src\components\Administration\networkManagement.vue
+ * @LastEditTime: 2022-05-28 20:18:58
+ * @FilePath: \blogGitee\blogWeb\src\components\Administration\networkManagement.vue
 -->
 <template>
   <div class='network'>
-    <div class='echarts'>
-      <div class='echarts_liPie'>
-        <div class='echarts_InfLiu'>
+    <SHButton
+      v-if='listFlag'
+      class='btn_Top'
+      type='primary'
+      @click='(listFlag = !listFlag), (table_Data = [])'>返回</SHButton>
+    <div v-show='!listFlag' class='echarts'>
+      <div class='echarts_Left'>
+        <div class='echarts_Inf_Liu'>
           <div class='echarts_Inf'>
             <div>
               <p>当前IPV4地址：</p>
@@ -23,18 +28,26 @@
             <div>
               <p>下次流量重置时间：</p>
               <p style='font-weight: bold'>
-                {{ $options.filters.dateFilter(flow_Reset_Time) }}
+                {{
+                  isNaN(flow_Reset_Time)
+                    ? flow_Reset_Time
+                    : $options.filters.dateFilter(flow_Reset_Time)
+                }}
               </p>
             </div>
           </div>
           <div ref='echarts_Liu' class='echarts_Liu' />
         </div>
+        <div ref='echarts_Bar_Month' class='echarts_Bar_Month' />
+        <div ref='echarts_Bar_Area' class='echarts_Bar_Area' />
+      </div>
+      <div class='echarts_Right'>
+        <div ref='echarts_Map' class='echarts_Map' />
         <div ref='echarts_Pie' class='echarts_Pie' />
       </div>
-      <div ref='echarts_Map' class='echarts_Map' />
-      <div ref='echarts_Bar' class='echarts_Bar' />
     </div>
     <SHTable
+      v-if='listFlag'
       ref='SHTable'
       type
       :tab_Title='tab_Title'
@@ -81,22 +94,23 @@
             v-if='slotProps.row.frozen_State === 1'
             type='warn'
             icon='fa-unlock'
-            @click.stop='save_Network({...slotProps.row, frozen_State: 0})'>IP解冻</SHButton>
+            @click.stop='save_Network({ ...slotProps.row, frozen_State: 0 })'>IP解冻</SHButton>
           <SHButton
             v-if='slotProps.row.frozen_State === 0'
             type='danger'
             icon='fa-unlock-alt'
-            @click.stop='save_Network({...slotProps.row, frozen_State: 1})'>
+            @click.stop='save_Network({ ...slotProps.row, frozen_State: 1 })'>
             IP冻结
           </SHButton>
         </td>
       </template>
     </SHTable>
     <SHPaging
+      v-if='listFlag'
       config='total, sizes, prev, pager, next, jumper'
       :btnPageNum='5'
       :total='page_Size.total'
-      :pageSize='[5, 10, 15]'
+      :pageSize='[15, 20, 25]'
       @currentPageOpar='currentPageOpar'/>
   </div>
 </template>
@@ -116,7 +130,7 @@ import echarts from '../../../static/until/echarts.min.js'
 import * as echartsNew from 'echarts/core'
 import 'echarts-liquidfill'
 // 引入柱状图图表，图表后缀都为 Chart
-import { BarChart, PieChart } from 'echarts/charts'
+import { BarChart, PieChart, LineChart } from 'echarts/charts'
 // 引入提示框，标题，直角坐标系，数据集，内置数据转换器组件，组件后缀都为 Component
 import {
   TitleComponent,
@@ -132,6 +146,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 echartsNew.use([
   BarChart,
   PieChart,
+  LineChart,
   CanvasRenderer,
   TitleComponent,
   TooltipComponent,
@@ -143,6 +158,7 @@ echartsNew.use([
 export default {
   data() {
     return {
+      listFlag: false, // 切换列表
       flow_Reset_Time: 0,
       select_Public_IP: '',
       table_Data: [], // 人员数据
@@ -159,7 +175,7 @@ export default {
       ],
       page_Size: {
         skip: 1,
-        limit: 5,
+        limit: 15,
         total: 0
       },
       map_History: [],
@@ -189,6 +205,7 @@ export default {
       current_Skin: {},
       slow_Skin: 0,
       net_Point_Data: [], // 网络点位
+      ip_Point_Data: [], // ip点位
       net_Online_Data: [], // 在线网络点位
       online_Users_Data: [], // 在线用户列表
       active_Point: [], // 选中点位
@@ -229,7 +246,9 @@ export default {
         '天津市',
         '香港特别行政区',
         '澳门特别行政区'
-      ]
+      ],
+      selectTypeKet: '', // 选中的是省市还是城市
+      selectValue: '' // 选中的省市、城市名称
     }
   },
   computed: {
@@ -240,7 +259,6 @@ export default {
   watch: {
     Lander_Data: {
       async handler() {
-        this.get_Network_List()
         await this.get_Network_Online_Data_Opar()
         this.get_Network_Point_Data_Opar()
       },
@@ -265,21 +283,27 @@ export default {
       this.get_Network_List()
     },
     get_Network_List() {
-      const { page_Size: { skip, limit }} = this
-      get_Network_Data({ skip, limit }).then((res) => {
-        const { code, data, massage } = res.data
-        if (code === 200) {
-          const list = data.data.map((c) => {
-            c.edit = false
-            return c
-          })
-          this.table_Data = list
-          this.table_Data_Copy = list
-          this.page_Size.total = data.countNum
-        } else {
-          this.$Msg(massage, 'faild')
+      const {
+        page_Size: { skip, limit },
+        selectTypeKet,
+        selectValue
+      } = this
+      get_Network_Data({ skip, limit, selectTypeKet, selectValue }).then(
+        (res) => {
+          const { code, data, massage } = res.data
+          if (code === 200) {
+            const list = data.data.map((c) => {
+              c.edit = false
+              return c
+            })
+            this.table_Data = list
+            this.table_Data_Copy = list
+            this.page_Size.total = data.countNum
+          } else {
+            this.$Msg(massage, 'faild')
+          }
         }
-      })
+      )
     },
     edit_Network_Opar(c) {
       this.table_Data = deepClone(this.table_Data_Copy)
@@ -292,14 +316,23 @@ export default {
         if (code === 200) {
           const { limit_Time, access_Time } = data.data
           this.opation_Liu_Echarts(data.data)
-          this.flow_Reset_Time = limit_Time * 60 * 1000 + access_Time
+          this.flow_Reset_Time = access_Time
+            ? limit_Time * 60 * 1000 + access_Time
+            : '此IP最近未登录'
         } else {
           this.$Msg(massage, 'faild')
         }
       })
     },
     save_Network(c) {
-      const { _id, limit_Number, limit_Time, rest_Time, public_IP, frozen_State } = c
+      const {
+        _id,
+        limit_Number,
+        limit_Time,
+        rest_Time,
+        public_IP,
+        frozen_State
+      } = c
       const {
         limit_Number: limit_NumberC,
         limit_Time: limit_TimeC,
@@ -387,6 +420,13 @@ export default {
             c.bgColor = randomHexColorCode()
             if (c.province_IP) return c
           })
+          this.ip_Point_Data = data.data.map((c) => {
+            c.dateArrangement = new Date(
+              new Date(c.created_At).toLocaleDateString()
+            ).getTime()
+            return c
+          })
+          this.opation_Bar_Month_Echarts()
           this.opation_Map_Echarts()
           this.opation_Pie_Echarts(data.data)
         } else {
@@ -396,7 +436,13 @@ export default {
     },
     net_Point_Data_Arrangement() {
       const point_Data = []
-      const { location_Name, net_Point_Data, firstProvince, firstCity } = this
+      const {
+        location_Name,
+        net_Point_Data,
+        firstProvince,
+        firstCity,
+        ip_Point_Data
+      } = this
       let condiVar = ''
       let arrtriVar = ''
       if (location_Name === 'china' || location_Name === 'world') {
@@ -410,6 +456,11 @@ export default {
       } else {
         condiVar = 'city_IP'
         arrtriVar = 'county_IP'
+      }
+      if (ip_Point_Data.length) {
+        this.opation_Bar_Month_Echarts(condiVar, location_Name)
+        this.selectTypeKet = condiVar
+        this.selectValue = location_Name
       }
       return net_Point_Data.reduce((prev, c) => {
         if (condiVar === '' || c[condiVar] === location_Name) {
@@ -442,7 +493,7 @@ export default {
         active_Point
       } = this
       const net_Static_Data = this.net_Point_Data_Arrangement()
-      this.opation_Bar_Echarts()
+      this.opation_Bar_Echarts(net_Static_Data)
       const that = this
       const optionChart = {
         borderRadius: 10,
@@ -647,7 +698,7 @@ export default {
             itemStyle: {
               color: '#ee6666'
             },
-            data: [active_Point].filter(c => {
+            data: [active_Point].filter((c) => {
               return that.sity_Selection(c, code_Name, location_Name)
             })
           },
@@ -689,10 +740,11 @@ export default {
         }
       }
     },
-    opation_Bar_Echarts() {
-      const { myChartBar } = this
-      const net_Static_Data = this.net_Point_Data_Arrangement()
+    opation_Bar_Echarts(net_Static_Data) {
+      const { myChartBarAra } = this
       const optionChart = {
+        animationDuration: 2600,
+        animationEasing: 'linear',
         title: {
           text: '地区注册量',
           top: 5,
@@ -733,7 +785,7 @@ export default {
               let str = ''
               for (let i = 0; i < dataName.name.length; i++) {
                 str += dataName.name[i]
-                if (i % 3 === 0 && i !== 0) {
+                if (i % 6 === 0 && i !== 0) {
                   str += '\n'
                 }
               }
@@ -785,7 +837,7 @@ export default {
           }
         ]
       }
-      myChartBar.setOption(optionChart)
+      myChartBarAra.setOption(optionChart)
     },
     opation_Pie_Echarts(net_Point_Data) {
       const { myChartPie } = this
@@ -944,15 +996,118 @@ export default {
         ]
       }
       myChartLiu.setOption(optionChart)
+    },
+    opation_Bar_Month_Echarts(typeKey, value) {
+      const that = this
+      const { myChartBarMonth, ip_Point_Data } = this
+      const dataArrangement = ip_Point_Data.reduce((prev, c) => {
+        if (value === 'china' || c[typeKey] === value) {
+          if (prev[c.dateArrangement]) {
+            ++prev[c.dateArrangement]
+          } else {
+            prev[c.dateArrangement] = 1
+          }
+        }
+        return prev
+      }, {})
+      const optionChart = {
+        animationDuration: 2600,
+        title: {
+          text: 'ip访问量统计',
+          top: 5,
+          left: 5,
+          textStyle: {
+            fontSize: 14
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          position: function(pt) {
+            return [pt[0], '10%']
+          },
+          confine: true
+        },
+        toolbox: {
+          show: true,
+          itemSize: 18, // 工具栏 icon 的大小
+          itemGap: 10, // 工具栏 icon 每项之间的间隔
+          iconStyle: {
+            borderColor: '#fff',
+            borderWidth: 1.2
+          },
+          emphasis: {
+            iconStyle: {
+              borderColor: '#fff',
+              textFill: '#000'
+            }
+          },
+          right: '2%',
+          top: '2%',
+          feature: {
+            myBack: {
+              title: '详情',
+              icon: 'path://M512 1024C229.888 1024 0 794.112 0 512S229.888 0 512 0s512 229.888 512 512-229.888 512-512 512z m0-972.8c-253.952 0-460.8 206.848-460.8 460.8s206.848 460.8 460.8 460.8 460.8-206.848 460.8-460.8-206.848-460.8-460.8-460.8zM506.368 814.08c-20.992 11.776-38.4 17.92-51.712 17.92-11.776 0-20.992-3.584-28.16-10.752-6.656-7.168-10.24-17.408-10.24-30.208 0-40.96 25.088-141.312 75.776-301.056 2.56-7.68 3.584-14.336 3.584-19.968 0-6.656-3.072-9.728-9.216-9.728-6.656 0-14.336 2.56-23.04 7.68-8.704 5.12-27.648 22.016-57.344 50.176L384 501.248c33.792-36.352 64-61.952 91.648-77.312 27.648-15.36 51.2-23.04 70.656-23.04 10.752 0 18.944 2.048 24.576 6.656 5.632 4.608 8.704 10.752 8.704 18.944 0 9.728-10.752 50.176-32.768 121.344-35.328 116.736-53.248 186.88-53.248 210.944 0 4.608 1.024 8.704 3.584 11.776 2.56 3.072 5.12 4.608 7.68 4.608 10.752 0 38.4-20.48 82.432-60.928l19.456 18.944c-45.568 41.984-78.848 69.12-100.352 80.896zM624.64 266.24c-10.24 11.264-21.504 16.384-34.304 16.384-10.24 0-18.432-3.584-25.088-10.24-6.656-6.656-10.24-15.872-10.24-27.136 0-14.848 4.608-27.136 14.848-37.888 9.728-10.24 21.504-15.36 34.816-15.36 10.24 0 18.944 3.584 25.6 10.24 6.656 6.656 10.24 15.36 10.24 26.112-0.512 13.824-5.632 26.624-15.872 37.888z',
+              onclick: function() {
+                that.listFlag = !that.listFlag
+                that.get_Network_List()
+              }
+            }
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '8%',
+          bottom: '1%',
+          top: '22%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'time',
+          show: true,
+          boundaryGap: false
+        },
+        yAxis: {
+          show: false
+        },
+        series: [
+          {
+            name: 'IP访问量',
+            data: Object.keys(dataArrangement).reduce((prev, c) => {
+              prev.push([Number(c), dataArrangement[c]])
+              return prev
+            }, []),
+            type: 'line',
+            symbol: 'none',
+            areaStyle: { // 区域填充渐变颜色
+              color: {
+                type: 'radial',
+                x: 0.5,
+                y: 2,
+                r: 3,
+                colorStops: [{
+                  offset: 0, color: '#30cfd0' // 0% 处的颜色
+                }, {
+                  offset: 1, color: '#330867' // 100% 处的颜色
+                }]
+              }
+            },
+            lineStyle: {
+              width: 1,
+              color: '#30cfd0'
+            }
+          }
+        ]
+      }
+      myChartBarMonth.setOption(optionChart)
     }
   },
   async mounted() {
     this.current_Skin = this.skin_Data[0]
     this.myChartMap = echarts.init(this.$refs.echarts_Map)
-    this.myChartBar = echartsNew.init(this.$refs.echarts_Bar)
+    this.myChartBarAra = echartsNew.init(this.$refs.echarts_Bar_Area)
+    this.myChartBarMonth = echartsNew.init(this.$refs.echarts_Bar_Month)
     this.myChartPie = echartsNew.init(this.$refs.echarts_Pie)
     this.myChartLiu = echartsNew.init(this.$refs.echarts_Liu)
-    this.opation_Bar_Echarts()
     this.myChartMap.on('click', (data) => {
       if (this.map_History.length < 2) {
         this.map_History.push(data.name)
@@ -960,7 +1115,6 @@ export default {
       }
     })
     this.get_Map_Josn_Data_Opar('china')
-    this.get_Network_List()
     await this.get_Network_Online_Data_Opar()
     this.get_Network_Point_Data_Opar()
     this.select_Public_IP = this.public_IP
@@ -975,62 +1129,79 @@ export default {
   flex-direction: column;
   align-items: flex-end;
   flex: 1;
-  margin: 20px;
+  margin: 1.5%;
+  .btn_Top {
+    width: 100%;
+    margin-bottom: 20px;
+  }
   .echarts {
     width: 100%;
+    height: 100%;
     display: flex;
-    margin-bottom: 20px;
-    height: 380px;
     justify-content: space-between;
-    .echarts_liPie,
-    .echarts_Bar,
+    .echarts_Inf,
+    .echarts_Liu,
+    .echarts_Pie,
+    .echarts_Bar_Month,
+    .echarts_Bar_Area,
     .echarts_Map {
-      width: 32%;
-      height: 100%;
       background: #c9eaff;
       border-radius: 10px;
       z-index: 1;
       border: solid 1px #e0e0e0;
+      display: inline-block;
     }
-    .echarts_liPie {
-      background: rgba(0, 0, 0, 0);
-      border: none;
-      .echarts_InfLiu {
-        height: 50%;
+    .echarts_Left {
+      width: 50%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      .echarts_Inf_Liu {
         width: 100%;
-        margin-bottom: 4%;
+        height: 25%;
         display: flex;
         justify-content: space-between;
         .echarts_Inf {
           width: 48%;
           height: 100%;
-          background: #c9eaff;
-          border: solid 1px #e0e0e0;
-          border-radius: 10px;
           display: flex;
           justify-content: center;
           align-items: flex-start;
           flex-direction: column;
           color: #444;
           div {
-            margin: 8px 0 8px 15px;
+            margin: 4px 0 4px 15px;
             line-height: 20px;
           }
         }
         .echarts_Liu {
           height: 100%;
           width: 48%;
-          background: #c9eaff;
-          border: solid 1px #e0e0e0;
-          border-radius: 10px;
         }
+      }
+      .echarts_Bar_Month {
+        width: 100%;
+        height: 30%;
+      }
+      .echarts_Bar_Area {
+        width: 100%;
+        height: 38%;
+      }
+    }
+    .echarts_Right {
+      width: 48%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .echarts_Map {
+        width: 100%;
+        height: 68%;
       }
       .echarts_Pie {
         width: 100%;
-        height: 45%;
-        background: #c9eaff;
-        border-radius: 10px;
-        border: solid 1px #e0e0e0;
+        height: 28.5%;
       }
     }
   }
@@ -1061,7 +1232,7 @@ export default {
       }
     }
     .SHButton {
-      &:first-child{
+      &:first-child {
         margin-right: 20px;
       }
     }
