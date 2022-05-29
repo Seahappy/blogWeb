@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-04-12 10:02:09
  * @LastEditors: Cxy
- * @LastEditTime: 2022-05-27 22:59:16
- * @FilePath: \blogGitee\blogWeb\src\components\infoBlog\infoBlog.vue
+ * @LastEditTime: 2022-05-29 17:12:36
+ * @FilePath: \blog\blogweb\src\components\infoBlog\infoBlog.vue
 -->
 
 <template>
@@ -816,7 +816,7 @@ export default {
         cursor: pointer;
       }
       i:nth-child(1) {
-        font-size: 975px;
+        font-size: 75px;
         cursor: auto;
       }
       h2 {
