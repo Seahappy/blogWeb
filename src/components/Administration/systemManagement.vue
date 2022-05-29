@@ -3,7 +3,7 @@
  * @Author: Cxy
  * @Date: 2021-09-23 14:45:30
  * @LastEditors: Cxy
- * @LastEditTime: 2022-05-29 16:32:13
+ * @LastEditTime: 2022-05-29 17:16:30
  * @FilePath: \blog\blogweb\src\components\Administration\systemManagement.vue
 -->
 <template>
@@ -164,45 +164,6 @@
             <div><span>启动时间</span><span>加载中...</span></div>
           </li>
           <li v-for='c in processList' :key='c.pid'>
-            <div>
-              <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
-            </div>
-            <div>
-              <span>内存</span><span>{{
-                parseInt(c.memRss / 1024)
-                  ? parseInt(c.memRss / 1024) + "MB"
-                  : "加载中..."
-              }}</span>
-            </div>
-            <div>
-              <span>启动时间</span><span>{{ c.started || "加载中..." }}</span>
-            </div>
-            <div>
-              <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
-            </div>
-            <div>
-              <span>内存</span><span>{{
-                parseInt(c.memRss / 1024)
-                  ? parseInt(c.memRss / 1024) + "MB"
-                  : "加载中..."
-              }}</span>
-            </div>
-            <div>
-              <span>启动时间</span><span>{{ c.started || "加载中..." }}</span>
-            </div>
-            <div>
-              <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
-            </div>
-            <div>
-              <span>内存</span><span>{{
-                parseInt(c.memRss / 1024)
-                  ? parseInt(c.memRss / 1024) + "MB"
-                  : "加载中..."
-              }}</span>
-            </div>
-            <div>
-              <span>启动时间</span><span>{{ c.started || "加载中..." }}</span>
-            </div>
             <div>
               <span>进程名</span><span>{{ c.name || "加载中..." }}</span>
             </div>
