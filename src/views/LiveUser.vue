@@ -3,7 +3,7 @@
  * @Author: Cxy
  * @Date: 2022-06-04 14:02:35
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-06 23:03:01
+ * @LastEditTime: 2022-06-06 23:38:44
  * @FilePath: \blog\blogweb\src\views\LiveUser.vue
 -->
 <template>
@@ -13,7 +13,7 @@
         <SHImage
           v-if='live_User.head_Portrait'
           class='live_User_headPortrait'
-          :src="'http://localhost:1314' + live_User.head_Portrait"/>
+          :src='live_User.head_Portrait'/>
         <i v-else class='fa fa-user' aria-hidden='true' />
         <div class='live_User_Content'>
           <p>{{ live_User.nick_Name || live_User.admin_Code }}</p>
@@ -29,14 +29,14 @@
         autoplay
         playsinline
         controls
-        :poster="'http://localhost:1314' + live_User.live_Image"
+        :poster='live_User.live_Image'
         class='live_Video'/>
       <SHLoading v-if='video_Loading' class='live_Video_Mask' />
       <div v-if='video_Offline' class='live_Video_Mask live_Video_Offline'>
         <SHImage
           v-if='live_User.head_Portrait'
           class='live_User_headPortrait'
-          :src="'http://localhost:1314' + live_User.head_Portrait"/>
+          :src='live_User.head_Portrait'/>
         <i v-else class='fa fa-user' aria-hidden='true' />
         <p>主播暂时不在家哦~~</p>
       </div>
