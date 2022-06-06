@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-06-17 10:03:43
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-13 17:23:22
+ * @LastEditTime: 2022-05-30 19:10:35
  * @FilePath: \blog\blogweb\src\views\myManagement.vue
 -->
 <template>
@@ -44,7 +44,7 @@ export default {
     ...mapState('login', ['nav_Data'])
   },
   created() {
-    const iconData = ['fa-star-half-o', 'fa-cogs', 'fa-clipboard']
+    const iconData = ['fa-star-half-o', 'fa-cogs', 'fa-clipboard', 'fa-video-camera']
     this.admin_Router = this.nav_Data.filter((c) => {
       if (c.path === 'myManagement') {
         c.children.map((c, i) => (c.icon = iconData[i]))

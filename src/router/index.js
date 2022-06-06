@@ -19,6 +19,18 @@ const routes = [
     meta: { title: '博客', navShow: true }
   },
   {
+    path: '/Live',
+    component: () => import('../views/Live.vue'),
+    name: 'Live',
+    meta: { title: '直播', navShow: true }
+  },
+  {
+    path: '/LiveUser/:Id',
+    component: () => import('../views/LiveUser.vue'),
+    name: 'LiveUser',
+    meta: { title: '直播间', navShow: true }
+  },
+  {
     path: '/infoBlog',
     component: () => import('components/infoBlog/infoBlog.vue'),
     name: 'infoBlog',

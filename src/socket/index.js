@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-04-28 19:34:13
  * @LastEditors: Cxy
- * @LastEditTime: 2022-05-25 13:54:01
+ * @LastEditTime: 2022-06-06 14:04:50
  * @FilePath: \ehomes-admind:\blog\blogWeb\src\socket\index.js
  */
 
@@ -23,12 +23,14 @@ class SocketIO {
       }
     })
     this.socket.on('connect', () => {
-      this.socket.on('checkToken', massage => {
-        Vuex.getters['login/session_Clear_User'](massage)
-      })
-      this.socket.on('Ago_Login_Users', massage => {
-        Vuex.getters['login/session_Clear_User'](massage)
-      })
+      if (Vuex.state.login.Users.token) {
+        this.socket.on('checkToken', massage => {
+          Vuex.getters['login/session_Clear_User'](massage)
+        })
+        this.socket.on('Ago_Login_Users', massage => {
+          Vuex.getters['login/session_Clear_User'](massage)
+        })
+      }
     })
     // 报错重连
     this.socket.on('connect_error', err => {
@@ -37,8 +39,8 @@ class SocketIO {
     })
   }
   // 发送广播
-  emit(path, data) {
-    this.socket.emit(path, data)
+  emit(path, ...data) {
+    this.socket.emit(path, ...data)
   }
   // 手动连接
   connect() {
@@ -53,7 +55,7 @@ class SocketIO {
 
 const socket = new SocketIO()
 // 刷新页面重置socket并发送当前登陆人信息
-if (Vuex.state.login.Users.admin_Code !== '') {
+if (Vuex.state.login.Users.admin_Code) {
   socket.init()
   socket.connect()
   Vuex.dispatch('login/get_Router_Data', Vuex.state.login.Users.admin_Code)

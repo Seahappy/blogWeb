@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-06-17 16:16:55
  * @LastEditors: Cxy
- * @LastEditTime: 2022-05-26 10:22:57
+ * @LastEditTime: 2022-06-03 18:51:23
  * @FilePath: \ehomes-admind:\blog\blogWeb\src\components\myManagement\basicSettings.vue
 -->
 <template>
@@ -297,6 +297,7 @@ export default {
       bottom: 165px;
       border: solid 1px #dcdfe6;
       background-size: cover;
+      border-radius: 4px;
     }
     .My_Reward_Wx_Bg {
       bottom: 40px;

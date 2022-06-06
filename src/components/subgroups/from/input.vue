@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-06-07 14:27:59
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-30 18:02:51
- * @FilePath: \blog\blogweb\src\components\subgroups\from\input.vue
+ * @LastEditTime: 2022-06-06 14:09:37
+ * @FilePath: \ehomes-admind:\blog\blogWeb\src\components\subgroups\from\input.vue
 -->
 <template>
   <div class='SHInput'>
@@ -38,6 +38,7 @@
             ? 'rotate3d(1, 0, 0, 0deg)'
             : 'rotate3d(1, 0, 0, 90deg)',
         }">{{ massageCopy }}</span>
+      <slot />
     </div>
   </div>
 </template>
@@ -73,7 +74,9 @@ export default {
     max: String,
     step: String,
     oninput: String,
-    readonly: String
+    readonly: {
+      type: [String, Boolean]
+    }
   },
   data() {
     return {
@@ -106,6 +109,7 @@ export default {
     verify(value = this.iptVal === '' ? this.value : this.iptVal) {
       this.SHideCopy = false
       if (!this.prop) return
+      if (!this.form.rules[this.prop]) return
       if (this.form.rules[this.prop]['require'] && value.length === 0) {
         this.SHideCopy = true
         this.massageCopy = this.form.rules[this.prop]['require']['massage']
@@ -163,6 +167,7 @@ export default {
     position: relative;
     flex: 1;
     font-size: 12px;
+    display: flex;
     input {
       width: 100%;
       height: 35px;
@@ -175,10 +180,12 @@ export default {
       transition: border-color 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
       box-sizing: border-box;
       background: #40a0ff00;
-      cursor: pointer;
       &:focus {
         border-color: #409eff;
       }
+    }
+    input[readonly="readonly"] {
+      border: none;
     }
     .faildIpt {
       border-color: #f56c6c !important;
@@ -201,13 +208,12 @@ export default {
       box-sizing: border-box;
       width: 100%;
       color: #606266;
-      background-color: #fff;
+      background-color: rgba(255, 255, 255, 0);
       background-image: none;
       border: 1px solid #dcdfe6;
       border-radius: 4px;
       transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
       outline: none;
-      cursor: pointer;
       &:focus {
         border-color: #409eff;
       }

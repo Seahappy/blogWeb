@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-05-07 11:38:09
  * @LastEditors: Cxy
- * @LastEditTime: 2021-11-25 10:19:13
+ * @LastEditTime: 2022-05-30 19:23:02
  * @FilePath: \blog\blogweb\src\store\modules\login\index.js
  */
 import Vue from 'vue'
@@ -29,6 +29,7 @@ const state = {
   nav_Data: [
     { title: '首页', path: 'Home' },
     { title: '博客', path: 'Blog' },
+    { title: '直播', path: 'Live' },
     { title: '时间轴', path: 'TimeLine' },
     { title: '关于', path: 'About' },
     { title: '留言', path: 'Contact' }
@@ -36,6 +37,7 @@ const state = {
   nav_Data_Rest: [
     { title: '首页', path: 'Home' },
     { title: '博客', path: 'Blog' },
+    { title: '直播', path: 'Live' },
     { title: '时间轴', path: 'TimeLine' },
     { title: '关于', path: 'About' },
     { title: '留言', path: 'Contact' }

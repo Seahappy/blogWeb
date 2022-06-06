@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-05-25 17:49:02
  * @LastEditors: Cxy
- * @LastEditTime: 2022-05-25 21:55:36
- * @FilePath: \blogGitee\blogWeb\src\components\smallBell.vue
+ * @LastEditTime: 2022-06-06 15:13:07
+ * @FilePath: \ehomes-admind:\blog\blogWeb\src\components\smallBell.vue
 -->
 <template>
   <div ref='smallbell'>
@@ -79,11 +79,7 @@
                       color: chat_data[c].at(-1).receive_Online_Offline
                         ? '#000'
                         : '#767676',
-                    }">{{
-                      (chat_data[c].at(-1).send_Admin_Code === Users.admin_Code
-                        ? chat_data[c].at(-1).receive_Nick_Name
-                        : chat_data[c].at(-1).send_Nick_Name) || c
-                    }}</span>
+                    }">{{ receive_data(chat_data[c].at(-1)) }}</span>
                   <span style='float: right; line-height: 20px'>{{
                     chat_data[c].at(-1).sending_Time
                       ? $options.filters.dateFilter(
@@ -110,10 +106,7 @@
                 v-if='!Smallbell_SB'
                 style='float: left; position: relative; left: 10px'
                 @click='Chact_People_SH = !Chact_People_SH'>{{ Chact_People_SH ? "⬅" : "➡" }}</span>
-              {{
-                chat_data[active_Admin_Code].at(-1).receive_Nick_Name ||
-                  chat_data[active_Admin_Code].at(-1).receive_Admin_Code
-              }}
+              {{ receive_data(chat_data[active_Admin_Code].at(-1)) }}
               <span style='font-size: 12px; color: #7e7e7e'>
                 <i
                   v-if='
@@ -196,6 +189,24 @@ export default {
     ...mapGetters('admin', ['mute_Aud'])
   },
   methods: {
+    receive_data(chat_Person_Data) {
+      if (!chat_Person_Data.send_Admin_Code) {
+        return (
+          chat_Person_Data.receive_Nick_Name ||
+          chat_Person_Data.receive_Admin_Code
+        )
+      }
+      if (chat_Person_Data.receive_Admin_Code === this.Users.admin_Code) {
+        return (
+          chat_Person_Data.send_Nick_Name || chat_Person_Data.send_Admin_Code
+        )
+      } else {
+        return (
+          chat_Person_Data.receive_Nick_Name ||
+          chat_Person_Data.receive_Admin_Code
+        )
+      }
+    },
     // 点击聊天左侧联系人
     open_Chat_List(c) {
       this.active_Admin_Code = c
@@ -209,14 +220,20 @@ export default {
         active_Admin_Code
       } = this
       if (chat_Content === '') return this.$Msg('请输入内容', 'wran')
-      this.SK.emit('send_Message_Data', {
-        send_Admin_Code: admin_Code,
-        send_Login_Device: Login_Device_Code(),
-        send_Nick_Name: nick_Name,
-        send_Head_Portrait: head_Portrait,
-        receive_Admin_Code: active_Admin_Code,
-        chat_Content
-      })
+      this.SK.emit(
+        'send_Message_Data',
+        {
+          send_Admin_Code: admin_Code,
+          send_Login_Device: Login_Device_Code(),
+          send_Nick_Name: nick_Name,
+          send_Head_Portrait: head_Portrait,
+          receive_Admin_Code: active_Admin_Code,
+          chat_Content
+        },
+        (data) => {
+          this.echo_Message(data)
+        }
+      )
       this.chat_Content = ''
     },
     // 接收消息
@@ -226,12 +243,12 @@ export default {
         this.latest_News_admin_Code = send_Admin_Code
         this.massage_Num++
         if (!this.chat_data[send_Admin_Code]) {
-          this.chat_data[send_Admin_Code] = [
+          this.$set(this.chat_data, send_Admin_Code, [
             {
               ...data,
               receive_Online_Offline: 1
             }
-          ]
+          ])
         } else {
           this.chat_data[send_Admin_Code].push({
             ...data,
@@ -283,15 +300,13 @@ export default {
         })
       }
     },
-    echo_Message() {
-      this.SK.socket.on('echo_Message_Data', (data) => {
-        const { active_Admin_Code } = this
-        this.chat_data[active_Admin_Code].push({
-          ...data,
-          receive_Online_Offline: 1
-        })
-        this.Chat_Window()
+    echo_Message(data) {
+      const { active_Admin_Code } = this
+      this.chat_data[active_Admin_Code].push({
+        ...data,
+        receive_Online_Offline: 1
       })
+      this.Chat_Window()
     },
     get_Chat_Data_Oper() {
       return new Promise((resolve) => {
@@ -311,17 +326,15 @@ export default {
   mounted() {
     bus.$on('receive_Message', () => {
       this.receive_Message()
-      this.echo_Message()
     })
     if (this.SK.socket) {
       this.receive_Message()
-      this.echo_Message()
     }
     bus.$on('send_Chat_Person', (c = {}) => {
       this.chat_ShowH = true
       const { login_Device, admin_Code, head_Portrait, nick_Name } = c
       if (!this.chat_data[admin_Code]) {
-        this.chat_data[admin_Code] = [
+        this.$set(this.chat_data, admin_Code, [
           {
             receive_Admin_Code: admin_Code,
             receive_Head_Portrait: head_Portrait,
@@ -330,7 +343,7 @@ export default {
             receive_Online_Offline: 1,
             chat_Content: ''
           }
-        ]
+        ])
       }
       this.active_Admin_Code = admin_Code
       this.Chat_Window()
