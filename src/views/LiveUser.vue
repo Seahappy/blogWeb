@@ -3,8 +3,8 @@
  * @Author: Cxy
  * @Date: 2022-06-04 14:02:35
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-06 23:38:44
- * @FilePath: \blog\blogweb\src\views\LiveUser.vue
+ * @LastEditTime: 2022-06-08 16:32:37
+ * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\src\views\LiveUser.vue
 -->
 <template>
   <div class='live'>
@@ -14,13 +14,28 @@
           v-if='live_User.head_Portrait'
           class='live_User_headPortrait'
           :src='live_User.head_Portrait'/>
-        <i v-else class='fa fa-user' aria-hidden='true' />
+        <i
+          v-else
+          class='fa fa-user live_User_headPortrait'
+          aria-hidden='true'/>
         <div class='live_User_Content'>
-          <p>{{ live_User.nick_Name || live_User.admin_Code }}</p>
-          <p>
-            <span class='fa fa-address-card' aria-hidden='true' />{{
-              live_User.room_Description || "主播没有写"
-            }}
+          <p class='live_User_Code'>
+            <span>{{ live_User.nick_Name || live_User.admin_Code }}</span>
+            <span>{{ resolving_Power[resolving_Power_Code] }}</span>
+          </p>
+          <p class='live_User_Des'>
+            <span>
+              <i class='fa fa-address-card' aria-hidden='true' />
+              <span>{{ live_User.room_Description || "主播没有写" }}</span>
+            </span>
+            <span style='display: flex'>
+              <svg width='24px' version='1.1' viewBox='0 0 752 752'>
+                <path
+                  d='m453.11 249.49c-4.0391-1.8984-8.7148-1.793-12.668 0.25391-3.9414 2.0703-6.6875 5.8633-7.4219 10.262-3.1914 19.176-11.375 38.711-24.402 58.301-25.113-66.77-47.203-118.96-98.203-140.13-3.9258-1.625-8.3555-1.4062-12.113 0.57812-3.7461 1.9844-6.4141 5.5391-7.2539 9.6914-9.9883 48.664-32.801 84.152-54.875 118.45-23.07 35.883-44.871 69.762-44.871 111.72 0 52.57 18.48 99.125 59.938 150.95 3.6094 4.5 9.5312 6.375 15.098 4.7656 5.5234-1.625 9.5312-6.418 10.129-12.148 6.3398-59.859 26.539-99.812 71.176-139.16 15.164 14.672 29.816 38.848 43.664 72.094 1.9141 4.6094 6.1055 7.8633 11.031 8.5938 4.8984 0.73438 9.8789-1.1797 13.043-5.0234 13.418-16.281 25.918-42.297 34.562-62.77 16.746 30.996 28.902 70.25 39.984 127.47 1.1641 6.043 6.0898 10.641 12.195 11.398 6.2266 0.875 12.027-2.5039 14.609-8.0742 29.922-63.906 44.297-117.03 43.965-162.41-0.51172-69.227-36.715-121.31-107.59-154.82z'
+                  fill='#ff5353'/>
+              </svg>
+              {{ live_User.room_Heat + 1 || 0 }}
+            </span>
           </p>
         </div>
       </div>
@@ -31,13 +46,19 @@
         controls
         :poster='live_User.live_Image'
         class='live_Video'/>
+      <div class='live_Bullet_Chat'>
+        <div v-for='c in chat_Data' :key='c.time' class='live_Bullet_Chat_Item'>{{ c.chat_Content }}</div>
+      </div>
       <SHLoading v-if='video_Loading' class='live_Video_Mask' />
       <div v-if='video_Offline' class='live_Video_Mask live_Video_Offline'>
         <SHImage
           v-if='live_User.head_Portrait'
           class='live_User_headPortrait'
           :src='live_User.head_Portrait'/>
-        <i v-else class='fa fa-user' aria-hidden='true' />
+        <i
+          v-else
+          class='fa fa-user live_User_headPortrait'
+          aria-hidden='true'/>
         <p>主播暂时不在家哦~~</p>
       </div>
     </div>
@@ -65,18 +86,41 @@
 
 <script>
 import flvjs from 'flv.js'
-import { get_Live_Broadcast } from '@/http/model/live'
+import { get_Live_Broadcast, set_Live_Heat } from '@/http/model/live'
 import { mapState, mapGetters } from 'vuex'
 export default {
   data() {
     return {
       live_User: {},
       chat_Content: '',
-      chat_Data: [],
+      chat_Data: [
+        { chat_Content: '的说法是', time: 1 },
+        { chat_Content: '的第三方说法是', time: 2 },
+        { chat_Content: '的说发多少个是法是', time: 3 },
+        { chat_Content: '的说士大夫的撒的法是', time: 4 },
+        { chat_Content: '的说大师傅赶得上法国收费的噶法是', time: 5 }
+        // { chat_Content: '的说法是', time: 6 }
+        // { chat_Content: '的说收费的噶法是', time: 7 },
+        // { chat_Content: '的说法地方法规的是法国士大夫是', time: 8 },
+        // { chat_Content: '的说法大发噶的是', time: 9 },
+        // { chat_Content: '的说岁的法国法是', time: 10 },
+        // { chat_Content: '的说法的是', time: 11 },
+        // { chat_Content: '的是地方敢死队敢死队给法是', time: 12 },
+        // { chat_Content: '的说收到大师傅敢死队风格反倒是公司的发法国德国但是法是', time: 13 },
+        // { chat_Content: '的说是豆腐干山豆根是法是', time: 14 }
+      ],
       flvPlayer: null,
       video_Loading: true,
       video_Offline: false,
-      tourist_Code: (new Date().getTime() + '').slice(-6)
+      tourist_Code: (new Date().getTime() + '').slice(-6),
+      resolving_Power: {
+        360: '流畅',
+        540: '标清',
+        720: '高清',
+        900: '超清',
+        1080: '超高清'
+      },
+      resolving_Power_Code: ''
     }
   },
   methods: {
@@ -120,20 +164,23 @@ export default {
       )
     },
     get_Live_Broadcast_Oper() {
-      get_Live_Broadcast({ id: this.$route.params.Id }).then(
-        ({
-          data: {
-            data: { data },
-            code
+      return new Promise((resolve) => {
+        get_Live_Broadcast({ id: this.$route.params.Id }).then(
+          ({
+            data: {
+              data: { data },
+              code
+            }
+          }) => {
+            if (code === 200) {
+              this.live_User = data[0]
+              this.get_Live_Video_Oper()
+              this.live_Join_Room_Oper()
+              resolve()
+            }
           }
-        }) => {
-          if (code === 200) {
-            this.live_User = data[0]
-            this.get_Live_Video_Oper()
-            this.live_Join_Room_Oper()
-          }
-        }
-      )
+        )
+      })
     },
     get_Live_Video_Oper() {
       this.$nextTick((_) => {
@@ -143,7 +190,7 @@ export default {
           const live_Video = this.$refs.live_Video
           this.flvPlayer = flvjs.createPlayer({
             type: 'flv',
-            url: '/seaLive/' + live_url + room_Url_Key[1]
+            url: 'http://127.0.0.1:8442/seaLive/' + live_url + room_Url_Key[1]
           })
           this.flvPlayer.attachMediaElement(live_Video)
           this.flvPlayer.load()
@@ -153,17 +200,29 @@ export default {
       })
     },
     video_AddEventlistner() {
-      // this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, (res) => {
-      //   console.log('加载完成', res)
-      // })
+      // 加载完成
+      this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, (_) => {
+        this.video_Loading = false
+        this.video_Offline = true
+        this.pause_Video_Oper()
+      })
+      // 开始加载
       this.flvPlayer.on(flvjs.Events.MEDIA_INFO, ({ hasVideo }) => {
         if (hasVideo) {
           this.video_Loading = false
         }
       })
-      // this.flvPlayer.on(flvjs.Events.METADATA_ARRIVED, (res) => {
-      //   console.log('获取元数据', res)
-      // })
+      // 获取数据信息
+      this.flvPlayer.on(flvjs.Events.METADATA_ARRIVED, (res) => {
+        this.resolving_Power_Code = Object.keys(this.resolving_Power).reduce(
+          (prev, c) => {
+            if (c <= res.height) {
+              prev = c
+            }
+            return prev
+          }
+        )
+      })
       // this.flvPlayer.on(flvjs.Events.RECOVERED_EARLY_EOF, (res) => {
       //   console.log('恢复早期EOF', res)
       // })
@@ -171,22 +230,14 @@ export default {
       //   console.log('获取到脚本数据', res)
       // })
       // 加载失败
-      this.flvPlayer.on(flvjs.Events.ERROR, (_, __, errorInfo) => {
+      this.flvPlayer.on(flvjs.Events.ERROR, () => {
         this.video_Loading = false
         this.video_Offline = true
-        throw errorInfo
+        this.pause_Video_Oper()
       })
-
-      // // 【重要事件监听】http请求建立好后，该事件会一直监听flvjs实例
+      // 【重要事件监听】http请求建立好后，该事件会一直监听flvjs实例
       // this.flvPlayer.on(flvjs.Events.STATISTICS_INFO, (res) => {
       //   console.log('请求数据信息', res)
-      //   console.log('销毁实例')
-      //   // // 销毁实例
-      //   // flvPlayer.pause()
-      //   // flvPlayer.unload()
-      //   // flvPlayer.detachMediaElement()
-      //   // flvPlayer.destroy()
-      //   // flvPlayer = null
       // })
     },
     pause_Video_Oper() {
@@ -204,25 +255,24 @@ export default {
         tourist_Code
       } = this
       this.SK.socket &&
-        this.SK.emit(
-          'leave_Room',
-          {
-            room,
-            chat_Content:
-              (nick_Name || admin_Code || '游客' + tourist_Code) + '已离开房间'
-          },
-          (data) => {
-            this.chat_Data.push(data)
-          }
-        )
+        this.SK.emit('leave_Room', {
+          room,
+          chat_Content:
+            (nick_Name || admin_Code || '游客' + tourist_Code) + '已离开房间'
+        })
+    },
+    beforeunload() {
+      this.set_Live_Heat_Oper(-1)
+    },
+    set_Live_Heat_Oper(room_Heat) {
+      set_Live_Heat({ id: this.live_User.id, room_Heat })
     }
   },
   computed: {
     ...mapState('login', ['Users']),
     ...mapGetters('login', ['session_Clear_User'])
   },
-  created() {
-    this.get_Live_Broadcast_Oper()
+  async created() {
     if (!this.Users.admin_Code) {
       this.SK.init()
       this.SK.connect()
@@ -230,6 +280,8 @@ export default {
     this.SK.socket.on('receive_Msg', (data) => {
       this.chat_Data.push(data)
     })
+    await this.get_Live_Broadcast_Oper()
+    this.set_Live_Heat_Oper(1)
   },
   beforeDestroy() {
     this.pause_Video_Oper()
@@ -237,6 +289,11 @@ export default {
     if (!this.Users.admin_Code && this.SK.socket) {
       this.SK.disconnect()
     }
+    this.set_Live_Heat_Oper(-1)
+    window.removeEventListener('beforeunload', this.beforeunload)
+  },
+  beforeMount() {
+    window.addEventListener('beforeunload', this.beforeunload)
   }
 }
 </script>
@@ -264,35 +321,63 @@ export default {
         width: 80px;
         height: 100%;
         border-radius: 6px;
-        overflow: hidden;
-      }
-      i {
         font-size: 80px;
+        overflow: hidden;
+        text-align: center;
       }
       .live_User_Content {
         width: calc(100% - 100px);
-        font-size: 30px;
         color: #000;
         font-weight: 600;
         margin-left: 20px;
-        p:last-child {
-          color: #888;
-          font-size: 14px;
-          span {
-            margin: 14px 10px 0 0;
+        line-height: 38px;
+        .live_User_Code {
+          display: flex;
+          justify-content: space-between;
+          span:first-child {
+            flex: 1;
+            font-size: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          span:last-child {
+            background: linear-gradient(120deg, rgb(255, 0, 0), blue);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 14px;
           }
         }
-        p {
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          height: 38px;
+        .live_User_Des {
+          color: #888;
+          font-size: 14px;
+          display: flex;
+          justify-content: space-between;
+          i {
+            padding-right: 2px;
+          }
+          span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
         }
       }
     }
     .live_Video {
       width: 100%;
+    }
+    .live_Bullet_Chat {
+      position: absolute;
+      top: 102px;
+      color: #fff;
+      z-index: 1;
+      display: flex;
+      // flex-wrap: wrap;
+      .live_Bullet_Chat_Item {
+        display: inline-block;
+        // margin-right: 20px;
+      }
     }
     .live_Video_Mask {
       width: 100%;
@@ -307,14 +392,13 @@ export default {
       justify-content: center;
       flex-direction: column;
       color: #fff;
-      i {
-        font-size: 80px;
-      }
       .live_User_headPortrait {
         height: 90px;
         width: 90px;
         overflow: hidden;
         border-radius: 12px;
+        font-size: 80px;
+        text-align: center;
       }
       p {
         margin-top: 70px;
