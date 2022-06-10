@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-03-04 16:39:19
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-30 16:55:50
- * @FilePath: \blog\blogweb\vue.config.js
+ * @LastEditTime: 2022-06-10 08:35:05
+ * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\vue.config.js
  */
 const path = require('path')
 const CompressionPlugin = require('compression-webpack-plugin')
@@ -79,6 +79,21 @@ module.exports = {
         pathRewrite: {
           '^/music': ''
         }
+      },
+      '/headPortrait': {
+        target: 'http://127.0.0.1:1314',
+        ws: false, // 是否启用websockets
+        changeOrigin: true
+      },
+      '/liveImage': {
+        target: 'http://127.0.0.1:1314',
+        ws: false, // 是否启用websockets
+        changeOrigin: true
+      },
+      '/home': {
+        target: 'http://127.0.0.1:1314',
+        ws: false, // 是否启用websockets
+        changeOrigin: true
       }
     }
   }

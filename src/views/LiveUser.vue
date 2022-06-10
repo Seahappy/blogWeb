@@ -3,7 +3,7 @@
  * @Author: Cxy
  * @Date: 2022-06-04 14:02:35
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-08 16:32:37
+ * @LastEditTime: 2022-06-10 16:51:07
  * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\src\views\LiveUser.vue
 -->
 <template>
@@ -46,9 +46,7 @@
         controls
         :poster='live_User.live_Image'
         class='live_Video'/>
-      <div class='live_Bullet_Chat'>
-        <div v-for='c in chat_Data' :key='c.time' class='live_Bullet_Chat_Item'>{{ c.chat_Content }}</div>
-      </div>
+      <div ref='live_Barrage' class='live_Barrage' />
       <SHLoading v-if='video_Loading' class='live_Video_Mask' />
       <div v-if='video_Offline' class='live_Video_Mask live_Video_Offline'>
         <SHImage
@@ -93,22 +91,8 @@ export default {
     return {
       live_User: {},
       chat_Content: '',
-      chat_Data: [
-        { chat_Content: '的说法是', time: 1 },
-        { chat_Content: '的第三方说法是', time: 2 },
-        { chat_Content: '的说发多少个是法是', time: 3 },
-        { chat_Content: '的说士大夫的撒的法是', time: 4 },
-        { chat_Content: '的说大师傅赶得上法国收费的噶法是', time: 5 }
-        // { chat_Content: '的说法是', time: 6 }
-        // { chat_Content: '的说收费的噶法是', time: 7 },
-        // { chat_Content: '的说法地方法规的是法国士大夫是', time: 8 },
-        // { chat_Content: '的说法大发噶的是', time: 9 },
-        // { chat_Content: '的说岁的法国法是', time: 10 },
-        // { chat_Content: '的说法的是', time: 11 },
-        // { chat_Content: '的是地方敢死队敢死队给法是', time: 12 },
-        // { chat_Content: '的说收到大师傅敢死队风格反倒是公司的发法国德国但是法是', time: 13 },
-        // { chat_Content: '的说是豆腐干山豆根是法是', time: 14 }
-      ],
+      chat_Data: [],
+      barrage_Dom_Data: [],
       flvPlayer: null,
       video_Loading: true,
       video_Offline: false,
@@ -120,10 +104,38 @@ export default {
         900: '超清',
         1080: '超高清'
       },
-      resolving_Power_Code: ''
+      resolving_Power_Code: '',
+      timer: null
     }
   },
   methods: {
+    barrage_Init({ chat_Content }) {
+      const barrage_Dom = document.createElement('div')
+      barrage_Dom.innerHTML = chat_Content
+      const live_Barrage = this.$refs.live_Barrage
+      const live_Barrage_Width = live_Barrage.offsetWidth
+      barrage_Dom.style =
+        'position: absolute;white-space: nowrap;transition: transform 3s linear 0s;transform: translate3d(' +
+        live_Barrage_Width +
+        'px, 0, 0);'
+      live_Barrage.appendChild(barrage_Dom)
+      this.barrage_Dom_Data.push({
+        barrage_Dom,
+        barrage_Width: barrage_Dom.offsetWidth
+      })
+      if (!this.timer) this.trigger_Dom()
+      // this.trigger_Dom(barrage_Dom)
+    },
+    trigger_Dom() {
+      this.timer = setTimeout(() => {
+        this.barrage_Dom_Data.forEach((c) => {
+          c.barrage_Dom.style.transform = 'translate3d(-100%, 0, 0)'
+        })
+        this.barrage_Dom_Data = []
+        // clearTimeout(this.timer)
+        // this.timer = null
+      }, 1000)
+    },
     send_Out() {
       const {
         live_User: { _id: room },
@@ -139,6 +151,7 @@ export default {
         },
         (data) => {
           this.chat_Data.push(data)
+          this.barrage_Init(data)
         }
       )
       this.chat_Content = ''
@@ -159,6 +172,7 @@ export default {
             '进入房间'
         },
         (data) => {
+          this.barrage_Init(data)
           this.chat_Data.push(data)
         }
       )
@@ -279,6 +293,7 @@ export default {
     }
     this.SK.socket.on('receive_Msg', (data) => {
       this.chat_Data.push(data)
+      this.barrage_Init(data)
     })
     await this.get_Live_Broadcast_Oper()
     this.set_Live_Heat_Oper(1)
@@ -343,7 +358,7 @@ export default {
           }
           span:last-child {
             background: linear-gradient(120deg, rgb(255, 0, 0), blue);
-            -webkit-background-clip: text;
+            background-clip: text;
             color: transparent;
             font-size: 14px;
           }
@@ -367,17 +382,14 @@ export default {
     .live_Video {
       width: 100%;
     }
-    .live_Bullet_Chat {
+    .live_Barrage {
       position: absolute;
       top: 102px;
       color: #fff;
       z-index: 1;
-      display: flex;
-      // flex-wrap: wrap;
-      .live_Bullet_Chat_Item {
-        display: inline-block;
-        // margin-right: 20px;
-      }
+      width: 100%;
+      overflow: hidden;
+      height: 100px;
     }
     .live_Video_Mask {
       width: 100%;
