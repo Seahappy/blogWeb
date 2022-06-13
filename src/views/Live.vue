@@ -3,8 +3,8 @@
  * @Author: Cxy
  * @Date: 2022-05-30 19:15:40
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-08 13:24:49
- * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\src\views\Live.vue
+ * @LastEditTime: 2022-06-11 14:15:52
+ * @FilePath: \blog\blogweb\src\views\Live.vue
 -->
 <template>
   <div class='live'>
@@ -59,7 +59,7 @@
                 <span>{{ c.room_Heat || 0 }}</span>
               </div>
             </div>
-            <SHButton v-if='c.admin_Code === Users.admin_Code' type='primary' @click='chat_Person(c)'>联系</SHButton>
+            <SHButton v-if='c.admin_Code !== Users.admin_Code' type='primary' @click='chat_Person(c)'>联系</SHButton>
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default {
         border-radius: 8px 8px 0 0;
       }
       .live_Rooms_Item_Content {
-        padding: 7px 10px 11px;
+        padding: 7px 14px 11px;
         line-height: 24px;
         .live_Rooms_Item_Info {
           display: flex;
@@ -180,7 +180,7 @@ export default {
           background: #fff;
           width: 100%;
           border-radius: 0 0 8px 8px;
-          padding: 0 10px 14px 10px;
+          padding: 0 14px 10px;
           box-sizing: border-box;
           line-height: 20px;
           z-index: 10;

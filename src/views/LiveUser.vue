@@ -3,8 +3,8 @@
  * @Author: Cxy
  * @Date: 2022-06-04 14:02:35
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-10 16:51:07
- * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\src\views\LiveUser.vue
+ * @LastEditTime: 2022-06-11 15:13:59
+ * @FilePath: \blog\blogweb\src\views\LiveUser.vue
 -->
 <template>
   <div class='live'>
@@ -72,11 +72,11 @@
           v-if='Users.admin_Code'
           v-model='chat_Content'
           type='textarea'
-          @keydown.enter='send_Out'/>
+          @keypress.native='enterText($event)'/>
         <div v-else class='live_Send_Login'>
           <span @click="$router.push('/Login')">登录</span> 发弹幕，参与主播互动
         </div>
-        <SHButton type='primary' @click='send_Out'>发送</SHButton>
+        <SHButton type='primary' :disabled='!chat_Content' @click='send_Out'>发送</SHButton>
       </div>
     </div>
   </div>
@@ -93,6 +93,7 @@ export default {
       chat_Content: '',
       chat_Data: [],
       barrage_Dom_Data: [],
+      barrage_Dom_Memory_Data: [],
       flvPlayer: null,
       video_Loading: true,
       video_Offline: false,
@@ -115,26 +116,49 @@ export default {
       const live_Barrage = this.$refs.live_Barrage
       const live_Barrage_Width = live_Barrage.offsetWidth
       barrage_Dom.style =
-        'position: absolute;white-space: nowrap;transition: transform 3s linear 0s;transform: translate3d(' +
+        'position: absolute;white-space: nowrap;transition: transform 1s linear 0s;;transform: translate3d(' +
         live_Barrage_Width +
         'px, 0, 0);'
       live_Barrage.appendChild(barrage_Dom)
+      const barrage_Width = barrage_Dom.offsetWidth
       this.barrage_Dom_Data.push({
         barrage_Dom,
-        barrage_Width: barrage_Dom.offsetWidth
+        barrage_Width,
+        barrage_Duration: ((barrage_Width + live_Barrage_Width) / 150).toFixed(
+          1
+        )
       })
       if (!this.timer) this.trigger_Dom()
-      // this.trigger_Dom(barrage_Dom)
     },
     trigger_Dom() {
       this.timer = setTimeout(() => {
         this.barrage_Dom_Data.forEach((c) => {
+          const barrage_Last =
+            (new Date().getTime() -
+              this.barrage_Dom_Memory_Data.barrage_Start) *
+              0.2 <
+            this.barrage_Dom_Memory_Data.barrage_Width
+          if (barrage_Last) {
+            c.barrage_Dom.style.top = '30px'
+          }
           c.barrage_Dom.style.transform = 'translate3d(-100%, 0, 0)'
+          c.barrage_Dom.style.transitionDuration = c.barrage_Duration + 's'
+          this.barrage_Dom_Memory_Data = {
+            ...c,
+            barrage_Start: new Date().getTime()
+          }
+          c.barrage_Dom.addEventListener(
+            'transitionend',
+            () => {
+              c.barrage_Dom.remove()
+            },
+            false
+          )
         })
         this.barrage_Dom_Data = []
-        // clearTimeout(this.timer)
-        // this.timer = null
-      }, 1000)
+        clearTimeout(this.timer)
+        this.timer = null
+      })
     },
     send_Out() {
       const {
@@ -142,6 +166,7 @@ export default {
         chat_Content,
         Users: { admin_Code, nick_Name }
       } = this
+      if (!chat_Content) return
       this.SK.emit(
         'send_Msg',
         {
@@ -155,6 +180,16 @@ export default {
         }
       )
       this.chat_Content = ''
+    },
+    // text输入框enter发送 ctrl+enter换行
+    enterText(e) {
+      if (e.keyCode === 13) {
+        this.send_Out()
+        e.preventDefault() // 禁止回车的默认换行
+      }
+      if (e.keyCode === 10) {
+        this.chat_Content += e.key
+      }
     },
     live_Join_Room_Oper() {
       const {
@@ -319,9 +354,10 @@ export default {
   background: #f5f5f5;
   display: flex;
   padding: 30px 8%;
-  min-height: 78vh;
+  height: 80vh;
+  justify-content: space-between;
   .live_Left {
-    width: 66%;
+    width: 70%;
     border-radius: 5px;
     background: #fff;
     position: relative;
@@ -369,7 +405,7 @@ export default {
           display: flex;
           justify-content: space-between;
           i {
-            padding-right: 2px;
+            padding-right: 12px;
           }
           span {
             overflow: hidden;
@@ -384,12 +420,14 @@ export default {
     }
     .live_Barrage {
       position: absolute;
-      top: 102px;
+      top: 112px;
       color: #fff;
       z-index: 1;
       width: 100%;
       overflow: hidden;
       height: 100px;
+      font-size: 18px;
+      font-weight: bold;
     }
     .live_Video_Mask {
       width: 100%;
@@ -418,21 +456,37 @@ export default {
     }
   }
   .live_Right {
-    width: 30%;
+    width: 26%;
     padding: 15px;
     border-radius: 5px;
     background: #fff;
-    margin-left: 2%;
     .live_Chat {
-      height: calc(100% - 70px);
+      height: calc(100% - 65px);
       width: 100%;
+      overflow: scroll;
+      box-shadow: inset 0px 0px 4px 1px #00000008;
+      background: #00000008;
+      padding: 0 10px;
+      box-sizing: border-box;
+      &::-webkit-scrollbar {
+        width: 8px;
+        height: 0px;
+      }
+      &::-webkit-scrollbar-track {
+        background: #00000000;
+        box-shadow: inset 0 0 0 rgba(0, 0, 0, 0%);
+      }
+      &::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 0 rgba(0, 0, 0, 0%);
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+      }
       .live_Chat_Item {
-        display: flex;
         font-size: 14px;
-        margin-bottom: 10px;
-        line-height: 22px;
+        line-height: 30px;
+        word-break: break-all;
         span:first-child {
-          color: #b1b1b1;
+          color: #989898;
           margin-right: 6px;
         }
       }
@@ -441,7 +495,7 @@ export default {
       height: 50px;
       width: 100%;
       display: flex;
-      margin-top: 20px;
+      margin-top: 15px;
       .live_Send_Login {
         flex: 1;
         border-radius: 4px 0 0 4px;
