@@ -3,7 +3,7 @@
  * @Author: Cxy
  * @Date: 2022-06-04 14:02:35
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-15 11:18:28
+ * @LastEditTime: 2022-06-15 16:47:12
  * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\src\views\LiveUser.vue
 -->
 <template>
@@ -137,7 +137,7 @@ export default {
           const barrage_Last =
             (new Date().getTime() -
               this.barrage_Dom_Memory_Data.barrage_Start) *
-              0.2 <
+              0.15 <
             this.barrage_Dom_Memory_Data.barrage_Width
           if (barrage_Last) {
             c.barrage_Dom.style.top = '30px'
@@ -253,7 +253,7 @@ export default {
           const live_Video = this.$refs.live_Video
           this.flvPlayer = flvjs.createPlayer({
             type: 'flv',
-            url: 'http://127.0.0.1:8442/seaLive/' + live_url + room_Url_Key[1]
+            url: '/seaLive/' + live_url + room_Url_Key[1]
           })
           this.flvPlayer.attachMediaElement(live_Video)
           this.flvPlayer.load()
