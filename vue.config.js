@@ -2,7 +2,7 @@
  * @Author: Cxy
  * @Date: 2021-03-04 16:39:19
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-10 08:35:05
+ * @LastEditTime: 2022-06-15 08:38:49
  * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\vue.config.js
  */
 const path = require('path')
@@ -66,11 +66,6 @@ module.exports = {
         target: 'https://127.0.0.1:520',
         changeOrigin: true,
         ws: true
-      },
-      '/sockjs-node': {
-        target: 'https://127.0.0.1:520',
-        changeOrigin: true,
-        ws: false
       },
       '/music': {
         target: 'https://127.0.0.1:3000',

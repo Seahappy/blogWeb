@@ -3,8 +3,8 @@
  * @Author: Cxy
  * @Date: 2022-06-04 14:02:35
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-11 15:13:59
- * @FilePath: \blog\blogweb\src\views\LiveUser.vue
+ * @LastEditTime: 2022-06-15 11:18:28
+ * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\src\views\LiveUser.vue
 -->
 <template>
   <div class='live'>
@@ -61,7 +61,7 @@
       </div>
     </div>
     <div class='live_Right'>
-      <div class='live_Chat'>
+      <div ref='live_Chat' class='live_Chat'>
         <div v-for='c in chat_Data' :key='c.time' class='live_Chat_Item'>
           <span v-if='c.send_Person'>{{ c.send_Person }}：</span>
           <span>{{ c.chat_Content }}</span>
@@ -111,6 +111,7 @@ export default {
   },
   methods: {
     barrage_Init({ chat_Content }) {
+      this.auto_Distance_Oper()
       const barrage_Dom = document.createElement('div')
       barrage_Dom.innerHTML = chat_Content
       const live_Barrage = this.$refs.live_Barrage
@@ -159,6 +160,19 @@ export default {
         clearTimeout(this.timer)
         this.timer = null
       })
+    },
+    auto_Distance_Oper() {
+      const live_Chat_Dom = this.$refs.live_Chat
+      const live_Chat_SHeight = live_Chat_Dom.scrollHeight
+      const live_Chat_Top = live_Chat_Dom.scrollTop
+      const live_Chat_CHeight = live_Chat_Dom.clientHeight
+      const live_Chat_Distance =
+        live_Chat_SHeight - live_Chat_CHeight - live_Chat_Top
+      if (live_Chat_Distance < 80) {
+        this.$nextTick((_) => {
+          live_Chat_Dom.scrollTop = live_Chat_Dom.scrollHeight
+        })
+      }
     },
     send_Out() {
       const {
@@ -417,6 +431,7 @@ export default {
     }
     .live_Video {
       width: 100%;
+      height: calc(100% - 104px);
     }
     .live_Barrage {
       position: absolute;
