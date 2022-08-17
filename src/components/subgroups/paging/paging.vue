@@ -3,12 +3,12 @@
  * @Author: Cxy
  * @Date: 2021-11-29 14:56:52
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-06 20:04:21
- * @FilePath: \blog\blogweb\src\components\subgroups\paging\paging.vue
+ * @LastEditTime: 2022-08-15 16:56:37
+ * @FilePath: \ehomes-admind:\giteeBlog\blogWeb\src\components\subgroups\paging\paging.vue
 -->
 <template>
   <div class='SHPaging'>
-    <span v-if="configArran.includes('total')" class='totalClass'>共 {{ total }} 页</span>
+    <span v-if="configArran.includes('total')" class='totalClass'>共 {{ total }} 条</span>
     <SHToolTip
       v-if="configArran.includes('sizes')"
       ref='SHToolTip'

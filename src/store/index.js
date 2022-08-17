@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-02-27 23:02:14
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-12 17:54:40
- * @FilePath: \blog\blogweb\src\store\index.js
+ * @LastEditTime: 2022-08-15 01:25:01
+ * @FilePath: \blogGitee\blogWeb\src\store\index.js
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -16,7 +16,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    app_Background_Url: 'background-image: url(/home/backGroundImage' + new Date().getDay() + '.jpg);'
+    app_Background_Url: 'background-image: url(/homeBG/backGroundImage' + new Date().getDay() + '.png);'
   },
   mutations: {
     /**

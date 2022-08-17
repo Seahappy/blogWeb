@@ -3,8 +3,8 @@
  * @Author: Cxy
  * @Date: 2022-05-30 19:15:40
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-11 14:15:52
- * @FilePath: \blog\blogweb\src\views\Live.vue
+ * @LastEditTime: 2022-06-27 16:41:31
+ * @FilePath: \ehomes-admind:\giteeBlog\blogWeb\src\views\Live.vue
 -->
 <template>
   <div class='live'>
@@ -63,6 +63,8 @@
           </div>
         </div>
       </div>
+      <SHLoading v-if='loading_F' />
+      <div v-if='!loading_F && live_Data.length === 0' class='no_Fount'><img src='~assets/empty.png' alt=''></div>
     </div>
   </div>
 </template>
@@ -74,7 +76,8 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      live_Data: []
+      live_Data: [],
+      loading_F: true
     }
   },
   computed: {
@@ -95,6 +98,7 @@ export default {
           }
         }) => {
           if (code === 200) {
+            this.loading_F = false
             this.live_Data = data
           }
         }
@@ -113,7 +117,7 @@ export default {
   background: #f5f5f5;
   display: flex;
   padding: 30px 8% 50px 8%;
-  min-height: 45vh;
+  min-height: 60vh;
   .live_Rooms {
     width: 100%;
     .live_Rooms_Item {
@@ -210,6 +214,15 @@ export default {
             overflow: hidden;
           }
         }
+      }
+    }
+    .no_Fount {
+      width: 100%;
+      height: 60vh;
+      display: flex;
+      justify-content: center;
+      img {
+        height: 100%;
       }
     }
   }

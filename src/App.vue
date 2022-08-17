@@ -2,11 +2,11 @@
  * @Author: Cxy
  * @Date: 2021-02-27 23:02:14
  * @LastEditors: Cxy
- * @LastEditTime: 2021-12-18 20:29:38
- * @FilePath: \blog\blogweb\src\App.vue
+ * @LastEditTime: 2022-08-15 01:24:12
+ * @FilePath: \blogGitee\blogWeb\src\App.vue
 -->
 <template>
-  <div id='app' :style="{backgroundImage: 'url(/home/backGroundImage'+ new Date().getDay() +'.jpg)'}">
+  <div id='app' :style="{backgroundImage: 'url(/homeBG/backGroundImage'+ new Date().getHours() +'.png)'}">
     <div id='anchor_Point'/>
     <TopNav />
     <!-- <keep-alive> -->

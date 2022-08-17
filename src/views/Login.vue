@@ -2,14 +2,14 @@
  * @Author: Cxy
  * @Date: 2021-02-27 23:04:28
  * @LastEditors: Cxy
- * @LastEditTime: 2022-01-06 17:28:42
- * @FilePath: \blog\blogweb\src\views\Login.vue
+ * @LastEditTime: 2022-08-15 01:24:30
+ * @FilePath: \blogGitee\blogWeb\src\views\Login.vue
 -->
 <template>
   <div ref='slider' class='wrap' onselectstart='return false'>
-    <img class='back_Img' src='https://source.unsplash.com/featured/1920x1080/daily?lingerie model' alt='' >
+    <img class='back_Img' :src="'/loginBG/backGroundImage'+ new Date().getHours() +'.png'" alt='' >
     <div style='flex: 1; display: flex; justify-content: center'>
-      <div class='left_Img'/>
+      <div class='left_Img' :style="'background: url(/loginBG/backGroundImage'+ new Date().getHours() +'.png) center/cover no-repeat;'" />
     </div>
     <div class='right_Wrap'>
       <div class='right_Border'>
@@ -402,9 +402,6 @@ input:-ms-input-placeholder {
   .left_Img {
     width: 90%;
     height: 90vh;
-    background: url("https://source.unsplash.com/featured/1920x1080/daily?lingerie%20model")
-      center no-repeat;
-    background-size: cover;
     border-radius: 10px;
   }
   .right_Wrap {

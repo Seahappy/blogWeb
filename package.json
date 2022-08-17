@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint --config .eslintrc.js --ext .js,.vue src",
     "serve": "vue-cli-service serve --model developmen",
-    "build": "yarn lint && vue-cli-service build --model production"
+    "build": "npm run lint && vue-cli-service build --model production"
   },
   "dependencies": {
     "@popperjs/core": "^2.10.1",
@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "echarts": "^5.2.2",
     "echarts-liquidfill": "^3.1.0",
+    "flv.js": "^1.6.2",
     "lunar-javascript": "^1.0.36",
     "mavon-editor": "^2.9.1",
     "qweather-icons": "^1.0.2",

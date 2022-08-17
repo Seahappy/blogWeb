@@ -2,8 +2,8 @@
  * @Author: Cxy
  * @Date: 2021-03-04 16:39:19
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-15 08:38:49
- * @FilePath: \ehomes-admind:\gitHubBlog\blogWeb\vue.config.js
+ * @LastEditTime: 2022-08-06 22:30:07
+ * @FilePath: \blogGitee\blogWeb\vue.config.js
  */
 const path = require('path')
 const CompressionPlugin = require('compression-webpack-plugin')
@@ -13,7 +13,7 @@ function resolve(dir) {
 
 module.exports = {
   publicPath: '/',
-  outputDir: 'dist',
+  outputDir: 'blogWeb',
   assetsDir: 'assets',
   indexPath: 'index.html',
   runtimeCompiler: true, // 关键点在这
@@ -54,7 +54,7 @@ module.exports = {
     // 设置代理
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:1314', // 域名
+        target: 'https://127.0.0.1:1314', // 域名
         ws: false, // 是否启用websockets
         changeOrigin: true, // 开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
         pathRewrite: { // 重写路径运行后就代理到对应的地址
@@ -87,6 +87,11 @@ module.exports = {
       },
       '/home': {
         target: 'http://127.0.0.1:1314',
+        ws: false, // 是否启用websockets
+        changeOrigin: true
+      },
+      '/seaLive': {
+        target: 'http://127.0.0.1:8442',
         ws: false, // 是否启用websockets
         changeOrigin: true
       }

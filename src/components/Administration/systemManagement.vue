@@ -3,8 +3,8 @@
  * @Author: Cxy
  * @Date: 2021-09-23 14:45:30
  * @LastEditors: Cxy
- * @LastEditTime: 2022-05-29 17:16:30
- * @FilePath: \blog\blogweb\src\components\Administration\systemManagement.vue
+ * @LastEditTime: 2022-07-13 16:23:32
+ * @FilePath: \ehomes-admind:\giteeBlog\blogWeb\src\components\Administration\systemManagement.vue
 -->
 <template>
   <div class='sysTem'>
@@ -323,7 +323,7 @@ export default {
       this.net_Echarts.setOption(this.option_Net_Echarts(rxTx_Data))
       let severTime = time?.current
       let nodeUptimeRest = nodeUptime?.toFixed(0)
-      let systemTime = time?.uptime
+      let systemTime = Math.floor(time?.uptime)
       if (!timer && severTime) {
         this.timer = setInterval(() => {
           severTime += 1000

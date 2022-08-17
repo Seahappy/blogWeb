@@ -3,8 +3,8 @@
  * @Author: Cxy
  * @Date: 2022-05-30 19:06:36
  * @LastEditors: Cxy
- * @LastEditTime: 2022-06-04 23:41:38
- * @FilePath: \ehomes-admind:\blog\blogWeb\src\components\myManagement\myLive.vue
+ * @LastEditTime: 2022-08-07 01:32:57
+ * @FilePath: \blogGitee\blogWeb\src\components\myManagement\myLive.vue
 -->
 <template>
   <div class='myLive'>
@@ -114,7 +114,7 @@ export default {
       updateRoomNumFlg: false,
       formCopy: {},
       save_Flag: false,
-      room_Address: 'rtmp://seahappy.xyz/seaLive',
+      room_Address: 'rtmp://www.seahappy.xyz/seaLive',
       room_Key: ''
     }
   },
